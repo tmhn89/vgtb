@@ -1,4 +1,4 @@
-html, body, #viewDiv {
+html, body, #map {
     padding: 0;
     margin: 0;
     height: 100%;
@@ -6,6 +6,10 @@ html, body, #viewDiv {
 }
 
 /*disable zoom/pan action on popup*/
-.esri-popup__actions {
+.action.zoomTo {
     display: none;
+}
+
+.info-title {
+    font-weight: bold;
 }

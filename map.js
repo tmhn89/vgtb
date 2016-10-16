@@ -2,28 +2,36 @@
 var CENTER = [107.8462, 15.5776];
 var ZOOM_LEVEL = 9;
 
+var map;
+
 require([
-    "esri/Map",
-    "esri/views/MapView",
+    "esri/map",
     "esri/layers/FeatureLayer",
     "esri/layers/CSVLayer",
     "esri/renderers/SimpleRenderer",
+    "esri/renderers/HeatmapRenderer",
     "esri/symbols/SimpleMarkerSymbol",
-    "esri/PopupTemplate",
+    "esri/InfoTemplate",
+    "esri/dijit/analysis/ExtractData",
     "dojo/domReady!"
-], function(Map, MapView, FeatureLayer, CSVLayer, SimpleRenderer, SimpleMarkerSymbol, PopupTemplate) {
+], function(Map,
+    FeatureLayer, CSVLayer,
+    SimpleRenderer, HeatmapRenderer,
+    SimpleMarkerSymbol,
+    InfoTemplate,
+    ExtractData) {
 
-    // todo: add the following layers:
-    // 1. VGTB river basin boundary
-    // 2. Stations location
-    // 3. SPI calculated from JAXA's grid data
-    var layer_boundary = new FeatureLayer({
-        url: 'https://services7.arcgis.com/dzIg3kcuxPr7HZCe/arcgis/rest/services/VGTB_River_basin_boundary/FeatureServer/0'
-    });
+        // todo: add the following layers:
+        // 1. VGTB river basin boundary
+        // 2. Stations location
+        // 3. SPI calculated from JAXA's grid data
+        var layerBoundary = new FeatureLayer(
+            'https://services7.arcgis.com/dzIg3kcuxPr7HZCe/arcgis/rest/services/VGTB_River_basin_boundary/FeatureServer/0'
+        );
 
-    var layer_stations = new CSVLayer('data/stations.csv', {
-        class: 'layer-stations',
-        renderer:
+        var layerStations = new CSVLayer('data/stations.csv', {
+            class: 'layer-stations',
+            renderer:
             new SimpleRenderer({
                 symbol: new SimpleMarkerSymbol({
                     size: "16px",
@@ -34,56 +42,58 @@ require([
                     }
                 })
             }),
-        popupTemplate:
-            new PopupTemplate({
-                title: '{name}',
-                content:
-                    '<p>latitude: {lat}</p>' +
-                    '<p>longitude: {lng}</p>'
-            }),
-    });
+            infoTemplate:
+            new InfoTemplate(
+                '${name}',
+                '<p>latitude: ${lat}</p>' +
+                '<p>longitude: ${lng}</p>'
+            ),
+        });
 
-    console.log(layer_stations);
+        var layerRain = new CSVLayer('data/vgtb.csv', {
+            class: 'layer-rain',
+            infoTemplate:
+            new InfoTemplate(
+                '${rain}',
+                '<p>latitude: ${lat}</p>' +
+                '<p>longitude: ${lng}</p>'
+            ),
+        });
 
-    var layer_rain = new CSVLayer('data/vgtb.csv', {
-        class: 'layer-rain',
-        renderder:
-            new SimpleRenderer({
-                symbol: new SimpleMarkerSymbol({
-                    size: "16px",
-                    color: [0, 69, 238, 0.5],
-                    outline: {
-                        width: 0.5,
-                        color: "white"
-                    }
-                })
-            }),
-        // popupTemplate:
-        //     new PopupTemplate({
-        //         title: '{rain}',
-        //         content:
-        //             '<p>latitude: {lat}</p>' +
-        //             '<p>longitude: {lng}</p>'
-        //     })
-    });
+        var heatmapRenderer = new HeatmapRenderer({
+            field: 'rain',
+            colors: ["rgba(0, 0, 255, 0)","rgb(0, 0, 255)","rgb(255, 0, 255)", "rgb(255, 0, 0)"],
+            colorStops: [
+                { ratio: 0, color: 'transparent' },
+                { ratio: 0.1, color: 'rgba(52, 152, 219, 0.3)' },
+                { ratio: 0.5, color: 'rgba(52, 152, 219, 0.5)' },
+                { ratio: 0.75, color: 'rgba(41, 128, 185, 0.9)'}
+            ],
+            blurRadius: 12,
+            maxPixelIntensity: 80,
+            minPixelIntensity: 10,
+        });
 
-    // map and views
-    var map = new Map({
-        basemap: 'gray'
-    });
+        layerRain.setRenderer(heatmapRenderer);
 
-    map.add(layer_boundary);
-    map.add(layer_stations);
-    // map.add(layer_rain);
+        // todo: clip the rain layer within boundary layer
 
-    var view = new MapView({
-        container: "viewDiv",  // Reference to the scene div created in step 5
-        map: map,  // Reference to the map object created before the scene
-        zoom: ZOOM_LEVEL,  // Sets the zoom level based on level of detail (LOD)
-        center: CENTER,  // Sets the center point of view in lon/lat
-        constraints: { // disable zoom
+        // map
+        map = new Map('map', {
+            basemap: 'gray',
+            zoom: ZOOM_LEVEL,
+            maxZoom: ZOOM_LEVEL,
             minZoom: ZOOM_LEVEL,
-            maxZoom: ZOOM_LEVEL
-        },
+            slider: false,
+            logo: false,
+            center: CENTER,
+        });
+
+        map.addLayer(layerBoundary);
+        map.addLayer(layerStations);
+        map.addLayer(layerRain);
+
+        map.on('load', function() {
+            map.disableMapNavigation();
+        });
     });
-});
