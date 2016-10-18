@@ -12,14 +12,14 @@ require([
     "esri/renderers/HeatmapRenderer",
     "esri/symbols/SimpleMarkerSymbol",
     "esri/InfoTemplate",
-    "esri/dijit/analysis/ExtractData",
+    "esri/dijit/analysis/OverlayLayers",
     "dojo/domReady!"
 ], function(Map,
     FeatureLayer, CSVLayer,
     SimpleRenderer, HeatmapRenderer,
     SimpleMarkerSymbol,
     InfoTemplate,
-    ExtractData) {
+    OverlayLayers) {
 
         // todo: add the following layers:
         // 1. VGTB river basin boundary
@@ -76,8 +76,6 @@ require([
 
         layerRain.setRenderer(heatmapRenderer);
 
-        // todo: clip the rain layer within boundary layer
-
         // map
         map = new Map('map', {
             basemap: 'gray',
@@ -93,7 +91,25 @@ require([
         map.addLayer(layerStations);
         map.addLayer(layerRain);
 
-        map.on('load', function() {
+        map.on('update-end', function() {
             map.disableMapNavigation();
+            // console.log(getVGTBPoints(map.getLayer('graphicsLayer4'), map.getLayer('graphicsLayer2')));
         });
     });
+
+// get points inside vgtb river basin area
+function getVGTBPoints(rainLayer, boundaryLayer) {
+    var boundary_polygon = boundaryLayer.graphics[0].geometry;
+
+    var points = [];
+    rainLayer.graphics.forEach(function(item, index) {
+        if (boundary_polygon.contains(item.geometry)) {
+            points.push({
+                lat: item.attributes.lat,
+                lng: item.attributes.lng,
+                rain: item.attributes.rain
+            });
+        }
+    })
+    return JSON.stringify(points);
+}
