@@ -54,6 +54,7 @@ require([
                 '<p>latitude: ${lat}</p>' +
                 '<p>longitude: ${lng}</p>'
             ),
+            visible: false
         });
 
         // layer represent SPI
@@ -95,7 +96,7 @@ require([
         });
 
         map.addLayer(layerBoundary);
-        // map.addLayer(layerStations);
+        map.addLayer(layerStations);
         map.addLayer(layerSPI);
 
         map.on('update-end', function() {
@@ -132,6 +133,16 @@ require([
         $('#period_input').on('change', function() {
             $('#period').html($(this).val());
             redrawSPILayer('data/test_month.csv');
+        });
+
+        $('#stations_toggle').click(function() {
+            if($(this).html() === 'Show') {
+                $(this).html('Hide');
+                layerStations.show();
+            } else {
+                $(this).html('Show');
+                layerStations.hide();
+            }
         });
 
         function redrawSPILayer(newUrl) {
