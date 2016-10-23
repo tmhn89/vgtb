@@ -6,6 +6,7 @@
     <title>Vu Gia Thu Bon river basin drought map</title>
 
     <link rel="stylesheet" href="https://js.arcgis.com/3.18/esri/css/esri.css">
+    <link href="https://fonts.googleapis.com/css?family=Lora" rel="stylesheet">
     <link rel="stylesheet" href="css/custom.css" />
 
     <script src="https://js.arcgis.com/3.18/"></script>
@@ -14,11 +15,73 @@
 </head>
 <body>
 <div id="map"></div>
+
 <svg width="0" height="0" class="test">
     <defs>
         <clipPath id="vgtbBoundary">
         </clipPath>
     </defs>
 </svg>
+
+<div id="title">
+    <h1>SPI <span id="period">1-month</span> for <span id="year">2016</span></h1>
+</div>
+
+<div id="legend">
+    <table>
+        <tr>
+            <td><div class="color-block mild-drought"></div></td>
+            <td>-0.49 to -0.25</td>
+            <td>Mild drought</td>
+        </tr>
+        <tr>
+            <td><div class="color-block moderate-drought"></div></td>
+            <td>-0.99 to -0.5</td>
+            <td>Moderate drought</td>
+        </tr>
+        <tr>
+            <td><div class="color-block severe-drought"></div></td>
+            <td>-1.44 to -1.0</td>
+            <td>Severe drought</td>
+        </tr>
+        <tr>
+            <td><div class="color-block very-severe-drought"></div></td>
+            <td>-1.99 to -1.5</td>
+            <td>Very severe drought</td>
+        </tr>
+        <tr>
+            <td><div class="color-block extremely-drought"></div></td>
+            <td>less than -2.0</td>
+            <td>Extremely drought</td>
+        </tr>
+    </table>
+</div>
+
+<div id="controller">
+    <table>
+        <tr>
+            <td>
+                <p><b>Year:</b></p>
+                <p>
+                    <input id="year_input" type="number"
+                        min="1998" max="2016" step="1" value="2016" />
+                </p>
+            </td>
+            <td>
+                <p><b>SPI period:</b></p>
+                <p>
+                    <select id="period_input">
+                        <option>1-month</option>
+                        <option>3-month</option>
+                        <option>6-month</option>
+                        <option>12-month</option>
+                    </select>
+                </p>
+            </td>
+        </tr>
+    </table>
+
+</div>
+
 </body>
 </html>
