@@ -7,5 +7,9 @@ Limit data in VGTB area using [Simple Subset Wizard](http://disc.gsfc.nasa.gov/S
 
 Download all data for different date time using [Perl](http://disc.sci.gsfc.nasa.gov/ssw/documentation/SSW_URL_List_Downloading_Instructions.html)
 
+Use CSS clip-path to limit graph within VGTB river basin
+
+Use Thiessen Polygon Delineation to determine station catchment
+
 ## SPI calculation:
 [SPI package in R](https://cran.r-project.org/web/packages/spi/index.html)
