@@ -13,3 +13,8 @@ html, body, #map {
 .info-title {
     font-weight: bold;
 }
+
+img:not([id*=map_layer]) {
+    -webkit-clip-path: url('#vgtbBoundary');
+    clip-path: url('#vgtbBoundary');
+}
