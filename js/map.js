@@ -3,6 +3,8 @@ var CENTER = [107.8462, 15.5776];
 var ZOOM_LEVEL = 9;
 var CREATING_AREA_FILE = false;
 
+var CURRENT_YEAR = 2016;
+
 var map;
 
 require([
@@ -52,18 +54,10 @@ require([
                 '<p>latitude: ${lat}</p>' +
                 '<p>longitude: ${lng}</p>'
             ),
+            visible: false
         });
 
-        var layerRain = new CSVLayer('data/limited.csv', {
-            class: 'layer-rain',
-            infoTemplate:
-            new InfoTemplate(
-                '${rain}',
-                '<p>latitude: ${lat}</p>' +
-                '<p>longitude: ${lng}</p>'
-            ),
-        });
-
+        // layer represent SPI
         var heatmapRenderer = new HeatmapRenderer({
             field: 'rain',
             colorStops: [
@@ -77,7 +71,18 @@ require([
             blurRadius: 15,
         });
 
-        layerRain.setRenderer(heatmapRenderer);
+        var layerSPIOption = {
+            class: 'layer-rain',
+            infoTemplate:
+            new InfoTemplate(
+                '${rain}',
+                '<p>latitude: ${lat}</p>' +
+                '<p>longitude: ${lng}</p>'
+            ),
+        };
+
+        var layerSPI = new CSVLayer('data/limited.csv', layerSPIOption);
+        layerSPI.setRenderer(heatmapRenderer);
 
         // map
         map = new Map('map', {
@@ -91,8 +96,8 @@ require([
         });
 
         map.addLayer(layerBoundary);
-        // map.addLayer(layerStations);
-        map.addLayer(layerRain);
+        map.addLayer(layerStations);
+        map.addLayer(layerSPI);
 
         map.on('update-end', function() {
             map.disableMapNavigation();
@@ -114,6 +119,39 @@ require([
                 link.click();
             }
         });
+
+        // map controller
+        $('#year').html(CURRENT_YEAR);
+        $('#year_input').val(CURRENT_YEAR);
+
+        $('#year_input').on('change paste keyup', function() {
+            $('#year').html($(this).val());
+            // redraw layerSPI
+            redrawSPILayer('data/area.csv');
+        });
+
+        $('#period_input').on('change', function() {
+            $('#period').html($(this).val());
+            redrawSPILayer('data/test_month.csv');
+        });
+
+        $('#stations_toggle').click(function() {
+            if($(this).html() === 'Show') {
+                $(this).html('Hide');
+                layerStations.show();
+            } else {
+                $(this).html('Show');
+                layerStations.hide();
+            }
+        });
+
+        function redrawSPILayer(newUrl) {
+            map.removeLayer(layerSPI);
+            layerSPI = new CSVLayer(newUrl, layerSPIOption);
+            layerSPI.setRenderer(heatmapRenderer);
+            layerSPI.redraw();
+            map.addLayer(layerSPI);
+        }
 
     });
 
@@ -145,5 +183,4 @@ function getVGTBPoints(rainLayer, boundaryLayer, format) {
         default:
             break;
     }
-
 }

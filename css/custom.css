@@ -3,6 +3,11 @@ html, body, #map {
     margin: 0;
     height: 100%;
     width: 100%;
+    font-family: Lora;
+}
+
+body {
+    background-color: #efefef;
 }
 
 /*disable zoom/pan action on popup*/
@@ -14,7 +19,86 @@ html, body, #map {
     font-weight: bold;
 }
 
+#map_container,
 img:not([id*=map_layer]) {
     -webkit-clip-path: url('#vgtbBoundary');
     clip-path: url('#vgtbBoundary');
+}
+
+.esriControlsBR {
+    display: none;
+}
+
+#title h1 {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    font-size: 24px;
+    padding: 12px;
+    opacity: 0.9;
+    border-radius: 2px;
+    color: #666;
+}
+#title h1 span {
+    color: #000;
+}
+
+#legend {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    font-size: 12px;
+    padding: 12px;
+    opacity: 0.9;
+    background-color: #fff;
+    border-radius: 2px;
+}
+#legend td {
+    padding: 0 5px;
+    text-align: center;
+}
+#legend .color-block {
+    height: 12px;
+    width: 12px;
+    border-radius: 2px;
+}
+#legend .color-block.mild-drought { background-color: rgba(225,225,0,1); }
+#legend .color-block.moderate-drought { background-color: rgba(225,211,127,1); }
+#legend .color-block.severe-drought { background-color: rgba(230,152,0,1); }
+#legend .color-block.very-severe-drought { background-color: rgba(230,0,0,1); }
+#legend .color-block.extremely-drought { background-color: rgba(115,0,0,1); }
+
+#controller {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    font-size: 12px;
+    padding: 6px 12px;
+    opacity: 0.9;
+    background-color: #fff;
+    border-radius: 2px;
+}
+#controller * {
+    font-family: Lora;
+    border-radius: 4px;
+}
+#controller td {
+    padding: 0 5px;
+}
+#year_input {
+    border: 1px solid #aaa;
+    padding-left: 7px;
+}
+#stations_toggle {
+    background: #eee;
+    height: 16px;
+    line-height: 16px;
+    display: inline-block;
+    vertical-align: top;
+    text-align: center;
+    width: 48px;
+    border-radius: 4px;
+    border: 1px solid #aaa;
+    color: #000;
+    text-decoration: none;
 }
