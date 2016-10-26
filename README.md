@@ -25,7 +25,11 @@ ___
 ## Precitipation data using JAXA
 ftp://hokusai.eorc.jaxa.jp/realtime/txt/02_AsiaSE
 
-format: CSV
+format: CSV, from 09/2014~present
+
+format: Grads binary, from 2008~present
+
+[Convert grads file to text](http://gradsaddict.blogspot.fi/2013/05/tutorial-how-to-save-data-into-txt.html)
 
 ## Data processing
 Unzip & cut down needed rows [using terminal](http://bconnelly.net/working-with-csvs-on-the-command-line/)
