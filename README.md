@@ -1,7 +1,10 @@
 ## Precitipation data: NASA's Earthdata
 Using [TRMM monthly precitipation data - TRMM_3B43](http://disc.gsfc.nasa.gov/uui/datasets/TRMM_3B43_V7/summary?keywords=TRMM_3B43_007) (grid 0.25x0.25)
+
 Check also GPM_3IMERGM dataset (grid 0.1x0.1)
 (data citation in the same link)
+
+rectangle: 15.04,107.24,16.16,108.66
 
 format: netCDF
 
