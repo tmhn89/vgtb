@@ -20,6 +20,8 @@ Use Thiessen Polygon Delineation to determine station catchment
 ## SPI calculation:
 [SPI package in R](https://cran.r-project.org/web/packages/spi/index.html)
 
+Try to use SDAT when R not work
+
 ___
 
 ## Precitipation data using JAXA
