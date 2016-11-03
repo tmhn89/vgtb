@@ -3,7 +3,7 @@ var CENTER = [107.8462, 15.5776];
 var ZOOM_LEVEL = 9;
 var CREATING_AREA_FILE = false;
 
-var CURRENT_YEAR = 2016;
+var START_YEAR = 2000;
 
 var map;
 
@@ -59,7 +59,7 @@ require([
 
         // layer represent SPI
         var heatmapRenderer = new HeatmapRenderer({
-            field: 'rain',
+            field: 'spi',
             colorStops: [
                 { value: -2, color: 'rgba(115, 0, 0, 0.5)' },
                 { value: -1.5, color: 'rgba(230, 0, 0, 0.5)' },
@@ -68,20 +68,23 @@ require([
                 { value: -0.25, color: 'rgba(225, 225, 0, 0.5)'},
                 { value: 3, color: 'transparent'}
             ],
-            blurRadius: 15,
+            // colors: ["rgba(0, 0, 255, 0)","rgb(0, 0, 255)","rgb(255, 0, 255)", "rgb(255, 0, 0)"],
+            blurRadius: 12,
         });
 
         var layerSPIOption = {
-            class: 'layer-rain',
+            class: 'layer-spi',
             infoTemplate:
             new InfoTemplate(
-                '${rain}',
+                'SPI = ${spi}',
                 '<p>latitude: ${lat}</p>' +
-                '<p>longitude: ${lng}</p>'
+                '<p>longitude: ${lon}</p>'
             ),
         };
 
-        var layerSPI = new CSVLayer('data/limited.csv', layerSPIOption);
+        var today = new Date();
+        // default: last month spi, 6-month scale
+        var layerSPI = new CSVLayer(spiFile(today.getFullYear(), today.getMonth(), 6), layerSPIOption);
         layerSPI.setRenderer(heatmapRenderer);
 
         // map
@@ -121,18 +124,46 @@ require([
         });
 
         // map controller
-        $('#year').html(CURRENT_YEAR);
-        $('#year_input').val(CURRENT_YEAR);
-
-        $('#year_input').on('change paste keyup', function() {
-            $('#year').html($(this).val());
-            // redraw layerSPI
-            redrawSPILayer('data/area.csv');
+        $("[type='number']").keypress(function (e) {
+            e.preventDefault();
         });
 
-        $('#period_input').on('change', function() {
-            $('#period').html($(this).val());
-            redrawSPILayer('data/test_month.csv');
+        $('#year').html(today.getFullYear());
+        $('#year_input')
+            .val(today.getFullYear())
+            .on('change', function() {
+                var year = $(this).val();
+                $('#year').html(year);
+
+                if (year == today.getFullYear()) {
+                    // month selection can not exceed last month
+                    $('#month_input').attr('min', 1);
+                    $('#month_input').attr('max', today.getMonth());
+                } else if (year == 2000) {
+                    // data only from March 2000 and later
+                    $('#month_input').attr('min', 3);
+                    $('#month_input').attr('max', 12);
+                } else {
+                    $('#month_input').attr('min', 1);
+                    $('#month_input').attr('max', 12);
+                }
+                // redraw layerSPI
+                redrawSPILayer();
+            });
+
+        $('#month').html(today.getMonth());
+        $('#month_input')
+            .val(today.getMonth())
+            .attr('max', today.getMonth())
+            .on('change', function() {
+                console.log($(this).val())
+                $('#month').html($(this).val());
+                redrawSPILayer();
+            });
+
+        $('#time_scale_input').on('change', function() {
+            $('#time_scale').html($('#time_scale_input option:selected').text());
+            redrawSPILayer();
         });
 
         $('#stations_toggle').click(function() {
@@ -145,7 +176,12 @@ require([
             }
         });
 
-        function redrawSPILayer(newUrl) {
+        function redrawSPILayer() {
+            var year = $('#year_input').val();
+            var month = $('#month_input').val();
+            var scale = $('#time_scale_input').val();
+            newUrl = spiFile(year,month,scale);
+
             map.removeLayer(layerSPI);
             layerSPI = new CSVLayer(newUrl, layerSPIOption);
             layerSPI.setRenderer(heatmapRenderer);
@@ -183,4 +219,8 @@ function getVGTBPoints(rainLayer, boundaryLayer, format) {
         default:
             break;
     }
+}
+
+function spiFile(year,month,scale) {
+    return 'data/spi/' + scale + '/' + year + '_' + month + '.csv';
 }
