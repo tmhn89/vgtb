@@ -85,6 +85,7 @@ img:not([id*=map_layer]) {
 #controller td {
     padding: 0 5px;
 }
+#month_input,
 #year_input {
     border: 1px solid #aaa;
     padding-left: 7px;
