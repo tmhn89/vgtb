@@ -8,22 +8,27 @@ var START_YEAR = 2000;
 var map;
 
 require([
+    "esri/config",
     "esri/map",
     "esri/layers/FeatureLayer",
     "esri/layers/CSVLayer",
     "esri/renderers/SimpleRenderer",
     "esri/renderers/HeatmapRenderer",
+    "esri/renderers/ClassBreaksRenderer",
     "esri/symbols/SimpleMarkerSymbol",
+    "esri/symbols/SimpleLineSymbol",
     "esri/InfoTemplate",
-    "esri/dijit/analysis/OverlayLayers",
+    "esri/dijit/analysis/InterpolatePoints",
+    "esri/Color",
     "dojo/domReady!"
-], function(Map,
+], function(esriConfig,
+    Map,
     FeatureLayer, CSVLayer,
-    SimpleRenderer, HeatmapRenderer,
-    SimpleMarkerSymbol,
+    SimpleRenderer, HeatmapRenderer, ClassBreaksRenderer,
+    SimpleMarkerSymbol, SimpleLineSymbol,
     InfoTemplate,
-    OverlayLayers) {
-
+    InterpolatePoints,
+    Color) {
         // todo: add the following layers:
         // 1. VGTB river basin boundary
         // 2. Stations location
@@ -60,17 +65,35 @@ require([
         // layer represent SPI
         var heatmapRenderer = new HeatmapRenderer({
             field: 'spi',
-            colorStops: [
-                { value: -2, color: 'rgba(115, 0, 0, 0.5)' },
-                { value: -1.5, color: 'rgba(230, 0, 0, 0.5)' },
-                { value: -1, color: 'rgba(230, 152, 0, 0.5)' },
-                { value: -0.5, color: 'rgba(225, 211, 127, 0.5)'},
-                { value: -0.25, color: 'rgba(225, 225, 0, 0.5)'},
-                { value: 3, color: 'transparent'}
-            ],
+            // colorStops: [
+            //     { value: -2, color: 'rgba(115, 0, 0, 0.5)' },
+            //     { value: -1.5, color: 'rgba(230, 0, 0, 0.5)' },
+            //     { value: -1, color: 'rgba(230, 152, 0, 0.5)' },
+            //     { value: -0.5, color: 'rgba(225, 211, 127, 0.5)'},
+            //     { value: -0.25, color: 'rgba(225, 225, 0, 0.5)'},
+            //     { value: 3, color: 'transparent'}
+            // ],
             // colors: ["rgba(0, 0, 255, 0)","rgb(0, 0, 255)","rgb(255, 0, 255)", "rgb(255, 0, 0)"],
-            blurRadius: 12,
+            blurRadius: 18,
         });
+        var opacity = 0.5;
+        var cbRenderer = new ClassBreaksRenderer(createSymbol('rgba(255,255,255, '+opacity+')'), 'spi');
+        cbRenderer.addBreak(-Infinity, -2, createSymbol('rgba(115, 0, 0, '+opacity+')'));
+        cbRenderer.addBreak(-2, -1.5, createSymbol('rgba(230, 0, 0, '+opacity+')'));
+        cbRenderer.addBreak(-1.5, -1, createSymbol('rgba(230, 152, 0, '+opacity+')'));
+        cbRenderer.addBreak(-1, -0.5, createSymbol('rgba(255, 211, 127, '+opacity+')'));
+        cbRenderer.addBreak(-0.5, -0.25, createSymbol('rgba(225, 225, 0, '+opacity+')'));
+
+        function createSymbol(color) {
+            var symbol = new SimpleMarkerSymbol({
+                size: 28,
+                color: new Color(color),
+                outline: null
+            });
+            symbol.setStyle(SimpleMarkerSymbol.STYLE_SQUARE);
+
+            return symbol;
+        }
 
         var layerSPIOption = {
             class: 'layer-spi',
@@ -84,12 +107,13 @@ require([
 
         var today = new Date();
         // default: last month spi, 6-month scale
-        var layerSPI = new CSVLayer(spiFile(today.getFullYear(), today.getMonth(), 6), layerSPIOption);
-        layerSPI.setRenderer(heatmapRenderer);
+        var layerSPI = new CSVLayer(spiFile(today.getFullYear(), today.getMonth(), 3), layerSPIOption);
+        // layerSPI.setRenderer(heatmapRenderer);
+        layerSPI.setRenderer(cbRenderer);
 
         // map
         map = new Map('map', {
-            basemap: 'gray',
+            basemap: 'national-geographic',
             zoom: ZOOM_LEVEL,
             maxZoom: ZOOM_LEVEL,
             minZoom: ZOOM_LEVEL,
@@ -99,8 +123,69 @@ require([
         });
 
         map.addLayer(layerBoundary);
-        map.addLayer(layerStations);
         map.addLayer(layerSPI);
+        map.addLayer(layerStations);
+
+        // map.on('layer-add-result', function(target) {
+        //     // check if SPI layer added.
+        //     if (target.layer.url.substring(0,8) === 'data/spi') {
+        //         var interpolateParams = {
+        //             id: "analysisTool",
+        //             inputLayer: layerSPI,
+        //             analysisGpServer: 'http://analysis.arcgis.com/arcgis/rest/services/tasks/GPServer',
+        //             portalUrl: "http://services.arcgisonline.com",
+        //             boundingPolygonLayer: layerBoundary,
+        //             showHelp: false,
+        //             showSelectAnalysisLayer: false,
+        //             showCredits: false,
+        //             map: map,
+        //             returnFeatureCollection: true
+        //         };
+        //         var interpolate = new InterpolatePoints(interpolateParams, "interpolate");
+        //         interpolate.startup();
+        //
+        //         interpolate.on("job-failed", function(params){
+        //             console.log('failed');
+        //             console.log('params');
+        //         });
+        //         interpolate.on("job-status", function(status){
+        //             if(status.jobStatus === 'esriJobFailed'){
+        //                 console.log("Job Failed: " + status.messages[0].description);
+        //             }
+        //         });
+        //         interpolate.on("job-submit", function(result){
+        //             //display the loading icon
+        //             console.log('Submitting job');
+        //             console.log(result);
+        //         });
+        //         //The hot spots analysis has finished successfully - display the results
+        //         interpolate.on("job-result", function(result){
+        //             //hide the loading icon
+        //
+        //             //add the results to the map and display the legend.
+        //             if(result.value){
+        //                 var template = new InfoTemplate("Results", "${*}");
+        //                 var resultLayer = new FeatureLayer(result.value.url || result.value, {
+        //                     infoTemplate: template,
+        //                     outFields: ["*"],
+        //                     opacity: 0.7, //default too transparent
+        //                     id: "resultLayer"
+        //                 });
+        //
+        //                 map.addLayer(resultLayer);
+        //                 //refresh and display the legend
+        //             }
+        //             if(result.analysisReport){
+        //                 //hide the hot spots panel and show the analysis info.
+        //                 console.log(result.analysisReport);
+        //             }
+        //
+        //             //re-enable the hot spots tool
+        //             interpolate.set("disableRunAnalysis", false);
+        //         });
+        //     }
+        //     // Run interpolate point analysis
+        // });
 
         map.on('update-end', function() {
             map.disableMapNavigation();
@@ -162,7 +247,6 @@ require([
             .val(today.getMonth())
             .attr('max', today.getMonth())
             .on('change', function() {
-                console.log($(this).val())
                 $('#month').html($(this).val());
                 redrawSPILayer();
             });
@@ -190,7 +274,8 @@ require([
 
             map.removeLayer(layerSPI);
             layerSPI = new CSVLayer(newUrl, layerSPIOption);
-            layerSPI.setRenderer(heatmapRenderer);
+            // layerSPI.setRenderer(heatmapRenderer);
+            layerSPI.setRenderer(cbRenderer);
             layerSPI.redraw();
             map.addLayer(layerSPI);
         }

@@ -25,8 +25,9 @@ img:not([id*=map_layer]) {
     clip-path: url('#vgtbBoundary');
 }
 
+#map_layer1,
 .esriControlsBR {
-    display: none;
+    display: none!important;
 }
 
 #title h1 {
