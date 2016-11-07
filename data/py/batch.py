@@ -29,7 +29,8 @@ def start():
                             for row in reader:
                                 lat = row[0]
                                 lon = row[1]
-                                precip = float(row[2])
+                                # data has accumulated hourly rain rate in the whole month.
+                                precip = float(row[2]) * 24
 
                                 pos = lat + '_' + lon
                                 row = {

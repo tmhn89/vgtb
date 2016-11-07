@@ -3,7 +3,13 @@ html, body, #map {
     margin: 0;
     height: 100%;
     width: 100%;
-    font-family: Lora;
+    font-family: Ubuntu;
+}
+html,body {
+    overflow: hidden;
+}
+#map {
+    transform: translateX(-10%) translateY(5%);
 }
 
 body {
@@ -44,10 +50,20 @@ img:not([id*=map_layer]) {
     color: #000;
 }
 
-#legend {
+#sidebar {
     position: fixed;
+    right: 0;
+    top: 0;
+    height: 100%;
+    opacity: 0.9;
+    background-color: #fff;
+    padding-top: 45px;
+}
+
+#legend {
+    /*position: fixed;
     bottom: 20px;
-    left: 20px;
+    left: 20px;*/
     font-size: 12px;
     padding: 12px;
     opacity: 0.9;
@@ -55,7 +71,7 @@ img:not([id*=map_layer]) {
     border-radius: 2px;
 }
 #legend td {
-    padding: 0 5px;
+    padding: 2px 8px;
     text-align: center;
 }
 #legend .color-block {
@@ -70,9 +86,9 @@ img:not([id*=map_layer]) {
 #legend .color-block.extremely-drought { background-color: rgba(115,0,0,1); }
 
 #controller {
-    position: fixed;
+    /*position: fixed;
     bottom: 20px;
-    right: 20px;
+    right: 20px;*/
     font-size: 12px;
     padding: 6px 12px;
     opacity: 0.9;
@@ -80,25 +96,33 @@ img:not([id*=map_layer]) {
     border-radius: 2px;
 }
 #controller * {
-    font-family: Lora;
+    font-family: Ubuntu;
     border-radius: 4px;
+}
+#controller div {
+    display: inline-block;
+    margin: 0 4px 8px 4px;
+    vertical-align: top;
 }
 #controller td {
     padding: 0 5px;
+}
+#controller td {
+    margin: 0 0 16px 0;
 }
 #month_input,
 #year_input {
     border: 1px solid #aaa;
     padding-left: 7px;
 }
-#stations_toggle {
+.btn-toggle {
     background: #eee;
     height: 16px;
     line-height: 16px;
+    padding: 0 8px;
     display: inline-block;
     vertical-align: top;
     text-align: center;
-    width: 48px;
     border-radius: 4px;
     border: 1px solid #aaa;
     color: #000;

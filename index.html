@@ -6,11 +6,12 @@
     <title>Vu Gia Thu Bon river basin drought map</title>
 
     <link rel="stylesheet" href="https://js.arcgis.com/3.18/esri/css/esri.css">
-    <link href="https://fonts.googleapis.com/css?family=Lora" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
     <link rel="stylesheet" href="css/custom.css" />
 
     <script src="https://js.arcgis.com/3.18/"></script>
     <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
+    <script src="js/config.js"></script>
     <script src="js/map.js"></script>
 </head>
 <body>
@@ -24,57 +25,28 @@
 </svg>
 
 <div id="title">
-    <h1><span id="time_scale">3-month</span> SPI for <span id="month">10</span>/<span id="year">2016</span></h1>
+    <h1><span id="time_scale">3-month</span> SPI for <span id="month">1</span>/<span id="year">2013</span></h1>
 </div>
 
-<div id="legend">
-    <table>
-        <tr>
-            <td><div class="color-block mild-drought"></div></td>
-            <td>-0.49 to -0.25</td>
-            <td>Mild drought</td>
-        </tr>
-        <tr>
-            <td><div class="color-block moderate-drought"></div></td>
-            <td>-0.99 to -0.5</td>
-            <td>Moderate drought</td>
-        </tr>
-        <tr>
-            <td><div class="color-block severe-drought"></div></td>
-            <td>-1.44 to -1.0</td>
-            <td>Severe drought</td>
-        </tr>
-        <tr>
-            <td><div class="color-block very-severe-drought"></div></td>
-            <td>-1.99 to -1.5</td>
-            <td>Very severe drought</td>
-        </tr>
-        <tr>
-            <td><div class="color-block extremely-drought"></div></td>
-            <td>less than -2.0</td>
-            <td>Extremely drought</td>
-        </tr>
-    </table>
-</div>
-
-<div id="controller">
-    <table>
-        <tr>
-            <td>
+<div id="sidebar">
+    <div id="controller">
+        <section>
+            <h3>Observation attributes</h3>
+            <div>
                 <p><b>Year:</b></p>
                 <p>
                     <input id="year_input" type="number"
-                        min="2000" max="2016" step="1" value="2016" />
+                        min="2000" max="2016" step="1" value="2013" />
                 </p>
-            </td>
-            <td>
+            </div>
+            <div>
                 <p><b>Month:</b></p>
                 <p>
                     <input id="month_input" type="number"
-                        min="1" max="12" step="1" value="10" />
+                        min="1" max="12" step="1" value="1" />
                 </p>
-            </td>
-            <td>
+            </div>
+            <div>
                 <p><b>Time scale:</b></p>
                 <p>
                     <select id="time_scale_input">
@@ -84,16 +56,24 @@
                         <option value="12">12-month</option>
                     </select>
                 </p>
-            </td>
-            <td>
-                <p><b>Stations:</b></p>
-                <p>
-                    <a id="stations_toggle" href="javascript:;">Show</a>
-                </p>
-            </td>
-        </tr>
-    </table>
+            </div>
+        </section>
+        <section>
+            <h3>Toogle features</h3>
+            <div>
+                <a class="btn-toggle" id="grid_toggle" href="javascript:;">Show Grid</a>
+            </div>
+            <div>
+                <a class="btn-toggle" id="stations_toggle" href="javascript:;">Hide Stations</a>
+            </div>
+        </section>
+    </div>
 
+    <div id="legend">
+        <h3>Legend</h3>
+        <table>
+        </table>
+    </div>
 </div>
 
 </body>

@@ -5,6 +5,9 @@ var CREATING_AREA_FILE = false;
 
 var START_YEAR = 2000;
 
+var DEFAULT_YEAR = 2013;
+var DEFAULT_MONTH = 1;
+
 var map;
 
 require([
@@ -29,6 +32,7 @@ require([
     InfoTemplate,
     InterpolatePoints,
     Color) {
+        var today = new Date();
         // todo: add the following layers:
         // 1. VGTB river basin boundary
         // 2. Stations location
@@ -40,27 +44,45 @@ require([
             }
         );
 
-        var layerStations = new CSVLayer('data/stations.csv', {
+        var opacity = 0.75;
+        var stationRenderer = new ClassBreaksRenderer(stationSymbol('rgba(255,255,255, '+opacity+')'), 'spi');
+        stationRenderer.addBreak(-Infinity, -2, stationSymbol('rgba(115, 0, 0, '+opacity+')'));
+        stationRenderer.addBreak(-1.99, -1.5, stationSymbol('rgba(230, 0, 0, '+opacity+')'));
+        stationRenderer.addBreak(-1.49, -1, stationSymbol('rgba(230, 152, 0, '+opacity+')'));
+        stationRenderer.addBreak(-0.99, -0.5, stationSymbol('rgba(255, 211, 127, '+opacity+')'));
+        stationRenderer.addBreak(-0.49, -0.25, stationSymbol('rgba(225, 225, 0, '+opacity+')'));
+        stationRenderer.addBreak(-0.25, 0.24, stationSymbol('rgba(100, 200, 100, '+opacity+')'));
+        stationRenderer.addBreak(0.25, 0.49, stationSymbol('rgba(0, 170, 0, '+opacity+')'));
+        stationRenderer.addBreak(0.5, 0.99, stationSymbol('rgba(0, 160, 255, '+opacity+')'));
+        stationRenderer.addBreak(1, 1.49, stationSymbol('rgba(130, 0, 220, '+opacity+')'));
+        stationRenderer.addBreak(1.5, 1.99, stationSymbol('rgba(160, 0, 200, '+opacity+')'));
+        stationRenderer.addBreak(2, Infinity, stationSymbol('rgba(115, 0, 0, '+opacity+')'));
+
+        function stationSymbol(color) {
+            var symbol = new SimpleMarkerSymbol({
+                size: 8,
+                color: new Color(color),
+                outline: new SimpleLineSymbol(SimpleLineSymbol.STYLE_DOT, new Color('#fff'), 1)
+            });
+            symbol.setStyle(SimpleMarkerSymbol.STYLE_CIRCLE);
+
+            return symbol;
+        }
+
+        var layerStationsOption = {
             class: 'layer-stations',
-            renderer:
-            new SimpleRenderer({
-                symbol: new SimpleMarkerSymbol({
-                    size: "16px",
-                    color: [238, 69, 0, 0.5],
-                    outline: {
-                        width: 0.5,
-                        color: "white"
-                    }
-                })
-            }),
             infoTemplate:
-            new InfoTemplate(
-                '${name}',
-                '<p>latitude: ${lat}</p>' +
-                '<p>longitude: ${lng}</p>'
-            ),
-            visible: false
-        });
+                new InfoTemplate(
+                    '${name}',
+                    '<p>latitude: ${lat}</p>' +
+                    '<p>longitude: ${lon}</p>' +
+                    '<p>SPI: ${spi}</p>'
+                ),
+            // visible: false
+        };
+
+        var layerStations = new CSVLayer(spiStationFile(DEFAULT_YEAR, DEFAULT_MONTH, 3), layerStationsOption);
+        layerStations.setRenderer(stationRenderer);
 
         // layer represent SPI
         var heatmapRenderer = new HeatmapRenderer({
@@ -76,15 +98,21 @@ require([
             // colors: ["rgba(0, 0, 255, 0)","rgb(0, 0, 255)","rgb(255, 0, 255)", "rgb(255, 0, 0)"],
             blurRadius: 18,
         });
-        var opacity = 0.5;
-        var cbRenderer = new ClassBreaksRenderer(createSymbol('rgba(255,255,255, '+opacity+')'), 'spi');
-        cbRenderer.addBreak(-Infinity, -2, createSymbol('rgba(115, 0, 0, '+opacity+')'));
-        cbRenderer.addBreak(-2, -1.5, createSymbol('rgba(230, 0, 0, '+opacity+')'));
-        cbRenderer.addBreak(-1.5, -1, createSymbol('rgba(230, 152, 0, '+opacity+')'));
-        cbRenderer.addBreak(-1, -0.5, createSymbol('rgba(255, 211, 127, '+opacity+')'));
-        cbRenderer.addBreak(-0.5, -0.25, createSymbol('rgba(225, 225, 0, '+opacity+')'));
 
-        function createSymbol(color) {
+        var gridRenderer = new ClassBreaksRenderer(gridSymbol('rgba(255,255,255, '+opacity+')'), 'spi');
+        gridRenderer.addBreak(-Infinity, -2, gridSymbol('rgba(115, 0, 0, '+opacity+')'));
+        gridRenderer.addBreak(-2, -1.5, gridSymbol('rgba(230, 0, 0, '+opacity+')'));
+        gridRenderer.addBreak(-1.5, -1, gridSymbol('rgba(230, 152, 0, '+opacity+')'));
+        gridRenderer.addBreak(-1, -0.5, gridSymbol('rgba(255, 211, 127, '+opacity+')'));
+        gridRenderer.addBreak(-0.5, -0.25, gridSymbol('rgba(225, 225, 0, '+opacity+')'));
+        gridRenderer.addBreak(-0.25, 0.25, gridSymbol('rgba(100, 200, 100, '+opacity+')'));
+        gridRenderer.addBreak(0.25, 0.5, gridSymbol('rgba(0, 170, 0, '+opacity+')'));
+        gridRenderer.addBreak(0.5, 1, gridSymbol('rgba(0, 160, 255, '+opacity+')'));
+        gridRenderer.addBreak(1, 1.5, gridSymbol('rgba(130, 0, 220, '+opacity+')'));
+        gridRenderer.addBreak(1.5, 2, gridSymbol('rgba(160, 0, 200, '+opacity+')'));
+        gridRenderer.addBreak(2, Infinity, gridSymbol('rgba(115, 0, 0, '+opacity+')'));
+
+        function gridSymbol(color) {
             var symbol = new SimpleMarkerSymbol({
                 size: 28,
                 color: new Color(color),
@@ -103,17 +131,17 @@ require([
                 '<p>latitude: ${lat}</p>' +
                 '<p>longitude: ${lon}</p>'
             ),
+            visible: false
         };
 
-        var today = new Date();
         // default: last month spi, 6-month scale
-        var layerSPI = new CSVLayer(spiFile(today.getFullYear(), today.getMonth(), 3), layerSPIOption);
+        var layerSPI = new CSVLayer(spiGridFile(DEFAULT_YEAR, DEFAULT_MONTH, 3), layerSPIOption);
         // layerSPI.setRenderer(heatmapRenderer);
-        layerSPI.setRenderer(cbRenderer);
+        layerSPI.setRenderer(gridRenderer);
 
         // map
         map = new Map('map', {
-            basemap: 'national-geographic',
+            basemap: 'osm',
             zoom: ZOOM_LEVEL,
             maxZoom: ZOOM_LEVEL,
             minZoom: ZOOM_LEVEL,
@@ -125,67 +153,6 @@ require([
         map.addLayer(layerBoundary);
         map.addLayer(layerSPI);
         map.addLayer(layerStations);
-
-        // map.on('layer-add-result', function(target) {
-        //     // check if SPI layer added.
-        //     if (target.layer.url.substring(0,8) === 'data/spi') {
-        //         var interpolateParams = {
-        //             id: "analysisTool",
-        //             inputLayer: layerSPI,
-        //             analysisGpServer: 'http://analysis.arcgis.com/arcgis/rest/services/tasks/GPServer',
-        //             portalUrl: "http://services.arcgisonline.com",
-        //             boundingPolygonLayer: layerBoundary,
-        //             showHelp: false,
-        //             showSelectAnalysisLayer: false,
-        //             showCredits: false,
-        //             map: map,
-        //             returnFeatureCollection: true
-        //         };
-        //         var interpolate = new InterpolatePoints(interpolateParams, "interpolate");
-        //         interpolate.startup();
-        //
-        //         interpolate.on("job-failed", function(params){
-        //             console.log('failed');
-        //             console.log('params');
-        //         });
-        //         interpolate.on("job-status", function(status){
-        //             if(status.jobStatus === 'esriJobFailed'){
-        //                 console.log("Job Failed: " + status.messages[0].description);
-        //             }
-        //         });
-        //         interpolate.on("job-submit", function(result){
-        //             //display the loading icon
-        //             console.log('Submitting job');
-        //             console.log(result);
-        //         });
-        //         //The hot spots analysis has finished successfully - display the results
-        //         interpolate.on("job-result", function(result){
-        //             //hide the loading icon
-        //
-        //             //add the results to the map and display the legend.
-        //             if(result.value){
-        //                 var template = new InfoTemplate("Results", "${*}");
-        //                 var resultLayer = new FeatureLayer(result.value.url || result.value, {
-        //                     infoTemplate: template,
-        //                     outFields: ["*"],
-        //                     opacity: 0.7, //default too transparent
-        //                     id: "resultLayer"
-        //                 });
-        //
-        //                 map.addLayer(resultLayer);
-        //                 //refresh and display the legend
-        //             }
-        //             if(result.analysisReport){
-        //                 //hide the hot spots panel and show the analysis info.
-        //                 console.log(result.analysisReport);
-        //             }
-        //
-        //             //re-enable the hot spots tool
-        //             interpolate.set("disableRunAnalysis", false);
-        //         });
-        //     }
-        //     // Run interpolate point analysis
-        // });
 
         map.on('update-end', function() {
             map.disableMapNavigation();
@@ -213,9 +180,9 @@ require([
             e.preventDefault();
         });
 
-        $('#year').html(today.getFullYear());
+        // $('#year').html(today.getFullYear());
         $('#year_input')
-            .val(today.getFullYear())
+            // .val(today.getFullYear())
             .on('change', function() {
                 var year = $(this).val();
                 $('#year').html(year);
@@ -242,10 +209,10 @@ require([
                 redrawSPILayer();
             });
 
-        $('#month').html(today.getMonth());
+        // $('#month').html(today.getMonth());
         $('#month_input')
-            .val(today.getMonth())
-            .attr('max', today.getMonth())
+            // .val(today.getMonth())
+            // .attr('max', today.getMonth())
             .on('change', function() {
                 $('#month').html($(this).val());
                 redrawSPILayer();
@@ -256,12 +223,22 @@ require([
             redrawSPILayer();
         });
 
+        $('#grid_toggle').click(function() {
+            if($(this).html() === 'Show Grid') {
+                $(this).html('Hide Grid');
+                layerSPI.show();
+            } else {
+                $(this).html('Show Grid');
+                layerSPI.hide();
+            }
+        });
+
         $('#stations_toggle').click(function() {
-            if($(this).html() === 'Show') {
-                $(this).html('Hide');
+            if($(this).html() === 'Show Stations') {
+                $(this).html('Hide Stations');
                 layerStations.show();
             } else {
-                $(this).html('Show');
+                $(this).html('Show Stations');
                 layerStations.hide();
             }
         });
@@ -270,14 +247,20 @@ require([
             var year = $('#year_input').val();
             var month = $('#month_input').val();
             var scale = $('#time_scale_input').val();
-            newUrl = spiFile(year,month,scale);
 
+            newGridUrl = spiGridFile(year,month,scale);
             map.removeLayer(layerSPI);
-            layerSPI = new CSVLayer(newUrl, layerSPIOption);
-            // layerSPI.setRenderer(heatmapRenderer);
-            layerSPI.setRenderer(cbRenderer);
+            layerSPI = new CSVLayer(newGridUrl, layerSPIOption);
+            layerSPI.setRenderer(gridRenderer);
             layerSPI.redraw();
             map.addLayer(layerSPI);
+
+            newStationUrl = spiStationFile(year,month,scale);
+            map.removeLayer(layerStations);
+            layerStations = new CSVLayer(newStationUrl, layerStationsOption);
+            layerStations.setRenderer(stationRenderer);
+            layerStations.redraw();
+            map.addLayer(layerStations);
         }
 
     });
@@ -312,6 +295,10 @@ function getVGTBPoints(rainLayer, boundaryLayer, format) {
     }
 }
 
-function spiFile(year,month,scale) {
+function spiGridFile(year,month,scale) {
     return 'data/spi/' + scale + '/' + year + '_' + month + '.csv';
+}
+
+function spiStationFile(year,month,scale) {
+    return 'data/stations/spi/' + scale + '/' + year + '_' + month + '.csv';
 }
