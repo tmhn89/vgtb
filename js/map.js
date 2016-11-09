@@ -47,15 +47,15 @@ require([
         var opacity = 0.75;
         var stationRenderer = new ClassBreaksRenderer(stationSymbol('rgba(255,255,255, '+opacity+')'), 'spi');
         stationRenderer.addBreak(-Infinity, -2, stationSymbol('rgba(115, 0, 0, '+opacity+')'));
-        stationRenderer.addBreak(-1.99, -1.5, stationSymbol('rgba(230, 0, 0, '+opacity+')'));
-        stationRenderer.addBreak(-1.49, -1, stationSymbol('rgba(230, 152, 0, '+opacity+')'));
-        stationRenderer.addBreak(-0.99, -0.5, stationSymbol('rgba(255, 211, 127, '+opacity+')'));
-        stationRenderer.addBreak(-0.49, -0.25, stationSymbol('rgba(225, 225, 0, '+opacity+')'));
-        stationRenderer.addBreak(-0.25, 0.24, stationSymbol('rgba(100, 200, 100, '+opacity+')'));
-        stationRenderer.addBreak(0.25, 0.49, stationSymbol('rgba(0, 170, 0, '+opacity+')'));
-        stationRenderer.addBreak(0.5, 0.99, stationSymbol('rgba(0, 160, 255, '+opacity+')'));
-        stationRenderer.addBreak(1, 1.49, stationSymbol('rgba(130, 0, 220, '+opacity+')'));
-        stationRenderer.addBreak(1.5, 1.99, stationSymbol('rgba(160, 0, 200, '+opacity+')'));
+        stationRenderer.addBreak(-1.99999, -1.5, stationSymbol('rgba(230, 0, 0, '+opacity+')'));
+        stationRenderer.addBreak(-1.49999, -1, stationSymbol('rgba(230, 152, 0, '+opacity+')'));
+        stationRenderer.addBreak(-0.99999, -0.5, stationSymbol('rgba(255, 211, 127, '+opacity+')'));
+        stationRenderer.addBreak(-0.49999, -0.25, stationSymbol('rgba(225, 225, 0, '+opacity+')'));
+        stationRenderer.addBreak(-0.25, 0.24999, stationSymbol('rgba(100, 200, 100, '+opacity+')'));
+        stationRenderer.addBreak(0.25, 0.49999, stationSymbol('rgba(0, 170, 0, '+opacity+')'));
+        stationRenderer.addBreak(0.5, 0.99999, stationSymbol('rgba(0, 160, 255, '+opacity+')'));
+        stationRenderer.addBreak(1, 1.49999, stationSymbol('rgba(130, 0, 220, '+opacity+')'));
+        stationRenderer.addBreak(1.5, 1.99999, stationSymbol('rgba(160, 0, 200, '+opacity+')'));
         stationRenderer.addBreak(2, Infinity, stationSymbol('rgba(115, 0, 0, '+opacity+')'));
 
         function stationSymbol(color) {
