@@ -43,15 +43,16 @@ def start():
                                 if not db.has_key(pos):
                                     db[pos] = []
                                 db[pos].append(row)
-
     # exportPrecipVectorByPos(db)
 
     # for testing
     #spif = sdat.spif('../stations/precip_vector/15.445_107.7936111.txt',6)
 
-    time_scales = [1,3,6,12]
-    for scale in time_scales:
-        runSPICalculator(scale,db)
+    # time_scales = [1,3,6,12]
+    # for scale in time_scales:
+    #     runSPICalculator(scale,db)
+
+    exportHeatmap()
 
 def exportPrecipVectorByPos(db):
     # write to lat_lon.txt files
@@ -86,7 +87,9 @@ def exportPrecipVectorByPosAndMonth(db):
 def runSPICalculator(scale, db):
     years = range(2000, 2015)
     final = {}
-    for pos in db.keys():
+    pos_list = db.keys()
+    pos_list.sort()
+    for pos in pos_list:
         lat = pos.split('_')[0]
         lon = pos.split('_')[1]
         station = getStationName(lat,lon)
@@ -115,6 +118,31 @@ def runSPICalculator(scale, db):
         for row in filecontent:
             writer.write(row + '\n')
 
+def exportHeatmap():
+    # export station file as header, sorted from west to east
+    station_sorted = sorted(stationDB, key=lambda k: k['lat'])
+    station_names = [station['name'] for station in station_sorted]
+
+    # for each file
+    data_dir = '../stations/spi'
+    for root, dirs, temp_f in os.walk(os.path.join(data_dir)):
+        for dir in dirs:
+            writer = open('../stations/heatmap_'+dir+'.csv','w')
+            writer.write(','.join(station_names) + '\n')
+            for temp_r, temp_d, files in os.walk(os.path.join(data_dir, dir)):
+                for file in files:
+                    # data file has yyyy_mm.csv format
+                    if file[0].isdigit():
+                        pdb.set_trace()
+                        with open(root + '/' + dir + '/' + file, 'r') as csvfile:
+                            reader = csv.reader(csvfile)
+                            next(reader)
+                            line = []
+                            # read every row, and put in one column
+                            for row in reader:
+                                # round 2 decimal number
+                                line.append(format(float(row[3]),'.2f'))
+                            writer.write(','.join(line) + '\n')
 
 ### Return a list of months from year_start to year_end
 ### each list item has key = month_year, blank value
