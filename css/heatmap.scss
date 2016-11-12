@@ -1,26 +1,123 @@
-$cellheight: 10px;
+$cellheight: 3px;
+$cellwidth: 20px;
+$colwidth: $cellwidth * 11;
 
 * {
-    font-family: "Ubuntu"
+    font-family: "Ubuntu";
+    color: #666;
+}
+#spis_wrap {
+    width: 10000px;
+    margin-left: 60px;
+    .spis {
+        display: inline-block;
+        h3 {
+            font-size: 16px;
+            text-align: center;
+            font-weight: 300;
+            margin: 10px 0;
+        }
+    }
 }
 div.year {
+    width: $colwidth;
+    height: $cellheight * 12;
+    padding: 0;
+    margin: 0;
     border: 1px solid transparent;
+    position: relative;
+    font-size: 0;
+    cursor: pointer;
+
+    div.legend {
+        position: absolute;
+        top: 0;
+        left: -40px;
+        text-align: right;
+        height: $cellheight * 12;
+        line-height: $cellheight * 12;
+        font-size: 12px;
+        width: 30px;
+        font-weight: 500;
+    }
     &:hover {
         border: 1px solid #666;
+        // height: $cellheight * 48;
+        // div.row {
+        //     height: $cellheight * 4;
+        //     div.cell {
+        //         height: $cellheight * 4;
+        //         line-height: $cellheight * 4;
+        //         color: #666;
+        //     }
+        // }
+        // div.legend {
+        //     height: $cellheight * 48;
+        //     line-height: $cellheight * 48;
+        // }
     }
 }
 div.row {
     height: $cellheight;
-    width: 500px;
+    width: $colwidth;
+    transition: 0.1s ease-in-out;
+
     div.cell {
         height: $cellheight;
         line-height: $cellheight;
         width: 9.09%;
         display: inline-block;
         text-align: center;
-        color: transparent;
-        color: #666;
         font-size: 10px;
         font-weight: 500;
+        color: transparent;
+        &.month {
+            display: none;
+        }
+    }
+}
+
+$tooltipcellheight: 15px;
+
+#tooltip {
+    background: rgba(255,255,255,1);
+    border: 1px solid #666;
+    height: $tooltipcellheight * 16;
+    width: $colwidth * 1.5 + $cellwidth * 1.5;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    border: 1px solid #ccc;
+    padding: 8px;
+    display: none;
+
+    h4 {
+        height: $tooltipcellheight;
+        line-height: $tooltipcellheight;
+        font-size: 12px;
+        margin: 0;
+        padding: 4px 16px 12px 16px;
+    }
+    div.row {
+        height: $tooltipcellheight;
+        width: $colwidth * 1.5 + $cellwidth * 1.5;
+        div.cell {
+            height: $tooltipcellheight;
+            line-height: $tooltipcellheight;
+            width: $cellwidth * 1.5;
+            color: #666;
+            &.month {
+                display: inline-block;
+            }
+        }
+        &.stations {
+            transform: translateY(-4px);
+            div.cell {
+                line-height: 10px;
+            }
+        }
+    }
+    .legend {
+        display: none;
     }
 }

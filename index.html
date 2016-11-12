@@ -43,7 +43,7 @@
                 <p><b>Month:</b></p>
                 <p>
                     <input id="month_input" type="number"
-                        min="1" max="12" step="1" value="1" />
+                        min="1" max="12" step="1" value="01" onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;" />
                 </p>
             </div>
             <div>

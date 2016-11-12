@@ -48,9 +48,9 @@ def start():
     # for testing
     #spif = sdat.spif('../stations/precip_vector/15.445_107.7936111.txt',6)
 
-    # time_scales = [1,3,6,12]
-    # for scale in time_scales:
-    #     runSPICalculator(scale,db)
+    time_scales = [1,3,6,12]
+    for scale in time_scales:
+        runSPICalculator(scale,db)
 
     exportHeatmap()
 
@@ -104,7 +104,7 @@ def runSPICalculator(scale, db):
         # temp = []
         for month, spis in spif.iteritems():
             for index, spi in enumerate(spis):
-                time = str(years[index]) + '_' + str(month)
+                time = str(years[index]) + '_' + '%02d' % month
                 # temp.append({'month':month,'year':years[index],'spi':spi})
                 row = station_name + ',' + lat + ',' + lon + ',' + str(spi)
                 if not final.has_key(time):
@@ -133,7 +133,6 @@ def exportHeatmap():
                 for file in files:
                     # data file has yyyy_mm.csv format
                     if file[0].isdigit():
-                        pdb.set_trace()
                         with open(root + '/' + dir + '/' + file, 'r') as csvfile:
                             reader = csv.reader(csvfile)
                             next(reader)
