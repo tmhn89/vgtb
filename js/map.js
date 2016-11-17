@@ -110,7 +110,7 @@ require([
         gridRenderer.addBreak(0.5, 1, gridSymbol('rgba(0, 160, 255, '+opacity+')'));
         gridRenderer.addBreak(1, 1.5, gridSymbol('rgba(130, 0, 220, '+opacity+')'));
         gridRenderer.addBreak(1.5, 2, gridSymbol('rgba(160, 0, 200, '+opacity+')'));
-        gridRenderer.addBreak(2, Infinity, gridSymbol('rgba(115, 0, 0, '+opacity+')'));
+        gridRenderer.addBreak(2, Infinity, gridSymbol('rgba(244, 0, 244, '+opacity+')'));
 
         function gridSymbol(color) {
             var symbol = new SimpleMarkerSymbol({
@@ -296,9 +296,11 @@ function getVGTBPoints(rainLayer, boundaryLayer, format) {
 }
 
 function spiGridFile(year,month,scale) {
-    return 'data/spi/' + scale + '/' + year + '_' + month + '.csv';
+    var twoDigitMonth = ("0" + month).slice(-2);
+    return 'data/spi/' + scale + '/' + year + '_' + twoDigitMonth + '.csv';
 }
 
 function spiStationFile(year,month,scale) {
-    return 'data/stations/spi/' + scale + '/' + year + '_' + month + '.csv';
+    var twoDigitMonth = ("0" + month).slice(-2);
+    return 'data/stations/spi/' + scale + '/' + year + '_' + twoDigitMonth + '.csv';
 }

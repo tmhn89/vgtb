@@ -41,46 +41,48 @@ def spi(precip_vector, scale):
         missing = [rain for rain in rains if rain == 0]
         num_valid = len(rains)-len(missing)
 
-        lns = []
-        for rain in rains:
-            lns.append(numpy.log(rain))
+        # if no data provided in that grid
+        if num_valid > 0:
+            lns = []
+            for rain in rains:
+                lns.append(numpy.log(rain))
 
-        # average rain
-        avg_rain = numpy.sum(rains)/num_valid
-        # average lns
-        avg_ln = numpy.log(avg_rain)
-        # sum lns
-        sum_ln = sum_only_num(lns)
+            # average rain
+            avg_rain = numpy.sum(rains)/num_valid
+            # average lns
+            avg_ln = numpy.log(avg_rain)
+            # sum lns
+            sum_ln = sum_only_num(lns)
+            a = avg_ln-(sum_ln/num_valid)
+            alpha = (1./4)/a*(1+math.sqrt(1+4*a/3))
+            beta = avg_rain/alpha
 
-        a = avg_ln-(sum_ln/num_valid)
-        alpha = (1./4)/a*(1+math.sqrt(1+4*a/3))
-        beta = avg_rain/alpha
+            # gamma distribution
+            cdfs = []
+            q = float(len(missing))/float(len(rains))
+            for rain in rains:
+                cdfs.append(q+(1-q)*gamma.cdf(rain,alpha,loc=0,scale=beta))
 
-        # gamma distribution
-        cdfs = []
-        q = float(len(missing))/float(len(rains))
-        for rain in rains:
-            cdfs.append(q+(1-q)*gamma.cdf(rain,alpha,loc=0,scale=beta))
-
-        # t and z
-        c0 = 2.515517
-        c1 = 0.802583
-        c2 = 0.010328
-        d1 = 1.432788
-        d2 = 0.189269
-        d3 = 0.001308
-        ts = []
-        spi = []
-        for cdf in cdfs:
-            if 0 < cdf <= 0.5:
-                t = math.sqrt(numpy.log(1/cdf**2))
-                z = - (t - (c0+c1*t+c2*t**2)/(1+d1*t+d2*t**2+d3*t**3))
-            else:
-                t = math.sqrt(numpy.log(1/(1-cdf)**2))
-                z = t - (c0+c1*t+c2*t**2)/(1+d1*t+d2*t**2+d3*t**3)
-            spi.append(z)
-
-        spis[month] = spi
+            # t and z
+            c0 = 2.515517
+            c1 = 0.802583
+            c2 = 0.010328
+            d1 = 1.432788
+            d2 = 0.189269
+            d3 = 0.001308
+            ts = []
+            spi = []
+            for cdf in cdfs:
+                if 0 < cdf <= 0.5:
+                    t = math.sqrt(numpy.log(1/cdf**2))
+                    z = - (t - (c0+c1*t+c2*t**2)/(1+d1*t+d2*t**2+d3*t**3))
+                else:
+                    t = math.sqrt(numpy.log(1/(1-cdf)**2))
+                    z = t - (c0+c1*t+c2*t**2)/(1+d1*t+d2*t**2+d3*t**3)
+                spi.append(z)
+            spis[month] = spi
+        else:
+            spis[month] = [0] * len(rains)
 
     return spis
 

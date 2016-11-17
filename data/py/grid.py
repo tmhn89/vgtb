@@ -14,7 +14,7 @@ def start():
     db = {}
 
     # list all file in folder
-    data_dir = '../jaxa/raw'
+    data_dir = '../jaxa'
     for root, dirs, temp_f in os.walk(os.path.join(data_dir)):
         for dir in dirs:
             for temp_r, temp_d, files in os.walk(os.path.join(data_dir, dir)):
@@ -31,7 +31,8 @@ def start():
                             for row in reader:
                                 lat = row[0].strip()
                                 lon = row[1].strip()
-                                precip = float(row[2])
+                                # convert mm/hr to mm/month
+                                precip = float(row[2]) * 24
 
                                 pos = lat + '_' + lon
                                 row = {
@@ -43,8 +44,7 @@ def start():
                                 if not db.has_key(pos):
                                     db[pos] = []
                                 db[pos].append(row)
-
-    # exportPrecipVectorByPos(db)
+    exportPrecipVectorByPos(db)
 
     # for testing
     #spif = sdat.spif('../stations/precip_vector/15.445_107.7936111.txt',6)
@@ -59,7 +59,7 @@ def exportPrecipVectorByPos(db):
         filename = '../precip_vector/' + pos + '.txt'
         writer = open(filename,'w')
         # create file
-        for year in range(2000, 2017):
+        for year in range(2000, 2015):
             for month in range(1,13):
                 record_in_month = [record for record in db[pos] if int(record['month']) == month and int(record['year']) == year]
                 if len(record_in_month) == 0:
@@ -76,7 +76,7 @@ def exportPrecipVectorByPosAndMonth(db):
         for month in range(1,13):
             filename = '../precip_vector/' + pos + '_' + str(month) + '.txt'
             writer = open(filename,'w')
-            for year in range(2000, 2017):
+            for year in range(2000, 2015):
                 record_in_month = [record for record in db[pos] if int(record['month']) == month and int(record['year']) == year]
                 if len(record_in_month) == 0:
                     writer.write('0' + '\n')
@@ -84,19 +84,20 @@ def exportPrecipVectorByPosAndMonth(db):
                     writer.write(record_in_month[0]['precip'] + '\n')
 
 def runSPICalculator(scale, db):
-    years = range(2000, 2017)
+    years = range(2000, 2015)
     final = {}
-    for pos in db.keys():
+    pos_list = db.keys()
+    pos_list.sort()
+    for pos in pos_list:
         lat = pos.split('_')[0]
         lon = pos.split('_')[1]
 
-        # obtain spi by station file
         spif = sdat.spif('../precip_vector/'+pos+'.txt',scale)
 
         # temp = []
         for month, spis in spif.iteritems():
             for index, spi in enumerate(spis):
-                time = str(years[index]) + '_' + str(month)
+                time = str(years[index]) + '_' + '%02d' % month
                 # temp.append({'month':month,'year':years[index],'spi':spi})
                 row = lat + ',' + lon + ',' + str(spi)
                 if not final.has_key(time):
@@ -110,7 +111,6 @@ def runSPICalculator(scale, db):
         for row in filecontent:
             writer.write(row + '\n')
 
-
 ### Return a list of months from year_start to year_end
 ### each list item has key = month_year, blank value
 def getMonthList(year_start, year_end):
@@ -120,18 +120,5 @@ def getMonthList(year_start, year_end):
             key = str(year) + '_' + str(month)
             month_list.append({key : 'name,lat,lon,spi\n'})
     return month_list
-
-# get list of stations from file
-stationDB = []
-with open('../stations.csv') as csvfile:
-    reader = csv.reader(csvfile)
-    next(reader)
-    for row in reader:
-        record = {
-            'name': row[0].strip(),
-            'lat': row[1].strip(),
-            'lon': row[2].strip()
-        }
-        stationDB.append(record)
 
 start()
