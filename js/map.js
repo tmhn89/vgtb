@@ -255,6 +255,9 @@ require([
             layerSPI.redraw();
             map.addLayer(layerSPI);
 
+            $('#grid_toggle').html('Hide Grid');
+            layerSPI.show();
+
             newStationUrl = spiStationFile(year,month,scale);
             map.removeLayer(layerStations);
             layerStations = new CSVLayer(newStationUrl, layerStationsOption);
