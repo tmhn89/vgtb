@@ -14,7 +14,7 @@ def start():
     db = {}
 
     # list all file in folder
-    data_dir = '../stations/raw'
+    data_dir = '../updated_stations/raw'
     for root, dirs, temp_f in os.walk(os.path.join(data_dir)):
         for dir in dirs:
             for temp_r, temp_d, files in os.walk(os.path.join(data_dir, dir)):
@@ -43,10 +43,10 @@ def start():
                                 if not db.has_key(pos):
                                     db[pos] = []
                                 db[pos].append(row)
-    # exportPrecipVectorByPos(db)
+    exportPrecipVectorByPos(db)
 
     # for testing
-    #spif = sdat.spif('../stations/precip_vector/15.445_107.7936111.txt',6)
+    #spif = sdat.spif('../updated_stations/precip_vector/15.445_107.7936111.txt',6)
 
     time_scales = [1,3,6,12]
     for scale in time_scales:
@@ -57,10 +57,10 @@ def start():
 def exportPrecipVectorByPos(db):
     # write to lat_lon.txt files
     for pos in db.keys():
-        filename = '../stations/precip_vector/' + pos + '.txt'
+        filename = '../updated_stations/precip_vector/' + pos + '.txt'
         writer = open(filename,'w')
         # create file
-        for year in range(2000, 2015):
+        for year in range(2000, 2017):
             for month in range(1,13):
                 record_in_month = [record for record in db[pos] if int(record['month']) == month and int(record['year']) == year]
                 if len(record_in_month) == 0:
@@ -75,9 +75,9 @@ def exportPrecipVectorByPosAndMonth(db):
     for pos in db.keys():
         # create file
         for month in range(1,13):
-            filename = '../stations/precip_vector/' + pos + '_' + str(month) + '.txt'
+            filename = '../updated_stations/precip_vector/' + pos + '_' + str(month) + '.txt'
             writer = open(filename,'w')
-            for year in range(2000, 2015):
+            for year in range(2000, 2017):
                 record_in_month = [record for record in db[pos] if int(record['month']) == month and int(record['year']) == year]
                 if len(record_in_month) == 0:
                     writer.write('0' + '\n')
@@ -85,7 +85,7 @@ def exportPrecipVectorByPosAndMonth(db):
                     writer.write(record_in_month[0]['precip'] + '\n')
 
 def runSPICalculator(scale, db):
-    years = range(2000, 2015)
+    years = range(2000, 2017)
     final = {}
     pos_list = db.keys()
     pos_list.sort()
@@ -99,7 +99,7 @@ def runSPICalculator(scale, db):
         else:
             station = 'station not found'
         # obtain spi by station file
-        spif = sdat.spif('../stations/precip_vector/'+pos+'.txt',scale)
+        spif = sdat.spif('../updated_stations/precip_vector/'+pos+'.txt',scale)
 
         # temp = []
         for month, spis in spif.iteritems():
@@ -112,7 +112,7 @@ def runSPICalculator(scale, db):
                 final[time].append(row)
 
     for time, filecontent in final.iteritems():
-        writer = open('../stations/spi/'+str(scale)+'/'+time+'.csv','w')
+        writer = open('../updated_stations/spi/'+str(scale)+'/'+time+'.csv','w')
         writer.write('name,lat,lon,spi\n')
 
         for row in filecontent:
@@ -124,10 +124,10 @@ def exportHeatmap():
     station_names = [station['name'] for station in station_sorted]
 
     # for each file
-    data_dir = '../stations/spi'
+    data_dir = '../updated_stations/spi'
     for root, dirs, temp_f in os.walk(os.path.join(data_dir)):
         for dir in dirs:
-            writer = open('../stations/heatmap_'+dir+'.csv','w')
+            writer = open('../updated_stations/heatmap_'+dir+'.csv','w')
             writer.write(','.join(station_names) + '\n')
             for temp_r, temp_d, files in os.walk(os.path.join(data_dir, dir)):
                 for file in files:

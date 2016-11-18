@@ -6,7 +6,7 @@ $(document).ready(function() {
     $.each(scales,function(i, scale) {
         $.ajax({
             type: 'GET',
-            url: 'data/stations/heatmap_'+scale+'.csv',
+            url: 'data/updated_stations/heatmap_'+scale+'.csv',
             dataType: 'text',
             success: function(data) {
                 var divId = 'spi_'+scale;
@@ -20,7 +20,8 @@ $(document).ready(function() {
                 var spiDOM = '<div class="row stations">'+stationDOM+'</div>';
                 $.each(data.split('\n'), function(index, row) {
                     if (index > 0 && row != '') {
-                        year = parseInt(index/12 + 2000);
+                        year = Math.floor((index-1)/12) + 2000;
+                        console.log(index + ' | ' + year);
                         rowDOM = '';
                         if (index % 12 === 1) {
                             rowDOM += '<div class="year" data-year="'+year+'" data-scale="'+scale+'">';
@@ -29,12 +30,17 @@ $(document).ready(function() {
                         month = index%12 === 0 ? 12 : index%12;
                         rowDOM += '<div class="cell month">'+month+'</div>';
                         $.each(row.split(','), function(index, cell) {
-                            rowDOM += '<div class="cell" style="background-color: '+getColor(cell)+'">' + cell + '</div>';
+                            if ((year == 2016 && month > 10) || (year == 2000 && month < scale)) {
+                                rowDOM += '<div class="cell" style="background-color: #ccc; color: transparent">'+cell+'</div>';
+                            } else {
+                                rowDOM += '<div class="cell" style="background-color: '+getColor(cell)+'">' + cell + '</div>';
+                            }
+
                         })
                         rowDOM += '</div>';
                         if (index % 12 === 0) {
                             if (scale == 1) {
-                                rowDOM += '<div class="legend">'+ (year-1) +'</div>';
+                                rowDOM += '<div class="legend">'+ (year) +'</div>';
                             }
                             rowDOM += '</div>';
                         }
