@@ -38,7 +38,7 @@ require([
         // 2. Stations location
         // 3. SPI calculated from JAXA's grid data
         var layerBoundary = new FeatureLayer(
-            'https://services7.arcgis.com/dzIg3kcuxPr7HZCe/arcgis/rest/services/VGTB_River_basin_boundary/FeatureServer/0',
+            'https://services7.arcgis.com/o5DIa73O7QiRWn8s/arcgis/rest/services/Basin_outer_bnd_27_09_2011/FeatureServer/0',
             {
                 class: 'layer-boundary',
             }
