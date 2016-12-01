@@ -24,12 +24,14 @@ body {
 .info-title {
     font-weight: bold;
 }
-
-#map_container,
+#map {
+    opacity: 0;
+}
+/*#map_container,
 img:not([id*=map_layer]) {
     -webkit-clip-path: url('#vgtbBoundary');
     clip-path: url('#vgtbBoundary');
-}
+}*/
 
 #map_layer1,
 .esriControlsBR {

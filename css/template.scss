@@ -75,6 +75,58 @@ div.leftnav {
         }
     }
 }
-div.content {
+div.content-wrap {
     border-top: 5px solid #08C;
+    padding: 15px 20px;
+}
+
+// hide esriControlsBR
+.esriControlsBR {
+    display: none;
+}
+#map {
+    opacity: 0;
+    &.precip {
+        width: 640px;
+        height: 500px;
+        #map_gc > g {
+            transform: translateY(15px);
+        }
+    }
+}
+.controller {
+    .ctrl-wrap {
+        display: inline-block;
+        input {
+            min-width: 100px;
+            height: 40px;
+            line-height: 40px;
+            font-size: 16px;
+            padding: 0 16px;
+        }
+        label {
+            transform: translateX(16px) translateY(-8px);
+        }
+    }
+}
+// hide default arcgis control
+.action.zoomTo {
+    display: none;
+}
+
+#legend {
+    /*position: fixed;
+    bottom: 20px;
+    left: 20px;*/
+    padding: 12px;
+    opacity: 0.9;
+}
+#legend td {
+    padding: 2px 8px;
+    font-size: 12px;
+}
+#legend .color-block {
+    height: 12px;
+    width: 12px;
+    border-radius: 2px;
 }

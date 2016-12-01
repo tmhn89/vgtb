@@ -1,0 +1,59 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Vu Gia Thu Bon river basin drought map</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://js.arcgis.com/3.18/esri/css/esri.css">
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+    <link rel="stylesheet" href="css/template.min.css" />
+
+    <script src="https://js.arcgis.com/3.18/"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="js/template.js"></script>
+    <script src="js/precip.js"></script>
+    <script>
+        var currentPage = ['precip'];
+    </script>
+</head>
+<body>
+    <div class="template"></div>
+    <div class="content">
+        <div class="col-sm-3">
+            <h2>Precipitation</h2>
+            <div class="controller">
+                <h5 style="margin-top: 32px;">Display records in:</h5>
+                <div class="ctrl-wrap">
+                    <p>
+                        <input id="year_input" type="number"
+                            min="2000" max="2016" step="1" value="2013" />
+                    </p>
+                    <p><label>Year</label></p>
+                </div>
+                <div class="ctrl-wrap">
+                    <p>
+                        <input id="month_input" type="number"
+                            min="1" max="12" step="1" value="01" onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;" />
+                    </p>
+                    <p><label>Month</label></p>
+                </div>
+            </div>
+            <div id="legend">
+                <h5>Legend <i>(unit: mm)</i></h5>
+                <table></table>
+            </div>
+        </div>
+        <div class="col-sm-9">
+            <div id="map" class="precip"></div>
+            <svg width="0" height="0">
+                <defs>
+                    <clipPath id="vgtbBoundary">
+                    </clipPath>
+                </defs>
+            </svg>
+        </div>
+    </div>
+</body>
+</html>

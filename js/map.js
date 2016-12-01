@@ -158,6 +158,12 @@ require([
             map.disableMapNavigation();
 
             $('#vgtbBoundary').append($('#' + layerBoundary.id + '_layer > path'));
+            if ($('#vgtbBoundary *').length > 0) {
+                $('#map_container, img:not([id*=map_layer])')
+                    .css('-webkit-clip-path', 'url("#vgtbBoundary")')
+                    .css('-clip-path', 'url("#vgtbBoundary")');
+                $('#map').css('opacity', 1);
+            }
 
             if (CREATING_AREA_FILE) {
                 // create csv content
