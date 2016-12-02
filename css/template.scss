@@ -78,6 +78,10 @@ div.leftnav {
 div.content-wrap {
     border-top: 5px solid #08C;
     padding: 15px 20px;
+    h2 {
+        white-space: nowrap;
+        font-size: 24px;
+    }
 }
 
 // hide esriControlsBR
@@ -97,12 +101,16 @@ div.content-wrap {
 .controller {
     .ctrl-wrap {
         display: inline-block;
-        input {
+        input, select {
             min-width: 100px;
             height: 40px;
             line-height: 40px;
             font-size: 16px;
             padding: 0 16px;
+            border-radius: 0!important;
+            border: none;
+            outline: none!important;
+            background: #fff;
         }
         label {
             transform: translateX(16px) translateY(-8px);
@@ -115,10 +123,7 @@ div.content-wrap {
 }
 
 #legend {
-    /*position: fixed;
-    bottom: 20px;
-    left: 20px;*/
-    padding: 12px;
+    margin-top: 16px;
     opacity: 0.9;
 }
 #legend td {
@@ -129,4 +134,114 @@ div.content-wrap {
     height: 12px;
     width: 12px;
     border-radius: 2px;
+}
+
+// statistics page
+$cellheight: 3px;
+$cellwidth: 20px;
+$colwidth: $cellwidth * 11;
+
+#spis_wrap {
+    width: 10000px;
+    margin-left: 60px;
+    .spis {
+        display: inline-block;
+        h3 {
+            font-size: 14px;
+            text-align: center;
+            // font-weight: 300;
+            margin: 10px 0;
+        }
+    }
+}
+div.year {
+    width: $colwidth + 2;
+    height: $cellheight * 12 + 2;
+    padding: 0;
+    margin: 0 0 1px 0;
+    border: 1px solid transparent;
+    position: relative;
+    font-size: 0;
+    cursor: pointer;
+
+    div.legend {
+        position: absolute;
+        top: 0;
+        left: -40px;
+        text-align: right;
+        height: $cellheight * 12;
+        line-height: $cellheight * 12;
+        font-size: 12px;
+        width: 30px;
+        font-weight: 500;
+    }
+    &:hover {
+        border: 1px solid #666;
+    }
+}
+#spis_wrap div.row,
+#tooltip div.row {
+    height: $cellheight;
+    width: $colwidth;
+    transition: 0.1s ease-in-out;
+    margin: 0;
+
+    div.cell {
+        height: $cellheight;
+        line-height: $cellheight;
+        width: 9.09%;
+        display: inline-block;
+        text-align: center;
+        font-size: 10px;
+        font-weight: 500;
+        color: transparent;
+        &.month {
+            display: none;
+        }
+    }
+}
+
+$tooltipcellheight: 15px;
+
+#tooltip {
+    background: rgba(255,255,255,1);
+    border: 1px solid #666;
+    height: $tooltipcellheight * 16 + 16;
+    width: $colwidth * 1.5 + $cellwidth * 1.5 + 24;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    border: 1px solid #ccc;
+    padding: 8px;
+    display: none;
+
+    h4 {
+        height: $tooltipcellheight;
+        line-height: $tooltipcellheight;
+        font-size: 12px;
+        margin: 0;
+        padding: 8px 16px 32px 16px;
+    }
+    div.row {
+        height: $tooltipcellheight;
+        width: $colwidth * 1.5 + $cellwidth * 1.5;
+        div.cell {
+            height: $tooltipcellheight;
+            line-height: $tooltipcellheight;
+            width: $cellwidth * 1.5;
+            color: #666;
+            &.month {
+                display: inline-block;
+            }
+        }
+        &.stations {
+            transform: translateY(-8px);
+            div.cell {
+                line-height: 10px;
+            }
+        }
+    }
+    .legend {
+        display: none;
+    }
 }

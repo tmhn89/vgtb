@@ -5,8 +5,8 @@ var CREATING_AREA_FILE = false;
 
 var START_YEAR = 2000;
 
-var DEFAULT_YEAR = 2013;
-var DEFAULT_MONTH = 6;
+var DEFAULT_YEAR = 2016;
+var DEFAULT_MONTH = 09;
 
 var map;
 

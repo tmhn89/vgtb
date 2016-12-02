@@ -3,7 +3,7 @@ $cellwidth: 20px;
 $colwidth: $cellwidth * 11;
 
 * {
-    font-family: "Ubuntu";
+//    font-family: "Ubuntu";
     color: #666;
 }
 #spis_wrap {
@@ -42,22 +42,10 @@ div.year {
     }
     &:hover {
         border: 1px solid #666;
-        // height: $cellheight * 48;
-        // div.row {
-        //     height: $cellheight * 4;
-        //     div.cell {
-        //         height: $cellheight * 4;
-        //         line-height: $cellheight * 4;
-        //         color: #666;
-        //     }
-        // }
-        // div.legend {
-        //     height: $cellheight * 48;
-        //     line-height: $cellheight * 48;
-        // }
     }
 }
-div.row {
+#spis_wrap div.row,
+#tooltip div.row {
     height: $cellheight;
     width: $colwidth;
     transition: 0.1s ease-in-out;

@@ -5,8 +5,8 @@ var CREATING_AREA_FILE = false;
 
 var START_YEAR = 2000;
 
-var DEFAULT_YEAR = 2013;
-var DEFAULT_MONTH = 1;
+var DEFAULT_YEAR = 2016;
+var DEFAULT_MONTH = 9;
 
 var map;
 
@@ -43,74 +43,19 @@ require([
                 class: 'layer-boundary',
             }
         );
-
-        var opacity = 0.75;
-        var stationRenderer = new ClassBreaksRenderer(stationSymbol('rgba(255,255,255, '+opacity+')'), 'spi');
-        stationRenderer.addBreak(-Infinity, -2, stationSymbol('rgba(115, 0, 0, '+opacity+')'));
-        stationRenderer.addBreak(-1.99999, -1.5, stationSymbol('rgba(230, 0, 0, '+opacity+')'));
-        stationRenderer.addBreak(-1.49999, -1, stationSymbol('rgba(230, 152, 0, '+opacity+')'));
-        stationRenderer.addBreak(-0.99999, -0.5, stationSymbol('rgba(255, 211, 127, '+opacity+')'));
-        stationRenderer.addBreak(-0.49999, -0.25, stationSymbol('rgba(225, 225, 0, '+opacity+')'));
-        stationRenderer.addBreak(-0.25, 0.24999, stationSymbol('rgba(100, 200, 100, '+opacity+')'));
-        stationRenderer.addBreak(0.25, 0.49999, stationSymbol('rgba(0, 170, 0, '+opacity+')'));
-        stationRenderer.addBreak(0.5, 0.99999, stationSymbol('rgba(0, 160, 255, '+opacity+')'));
-        stationRenderer.addBreak(1, 1.49999, stationSymbol('rgba(130, 0, 220, '+opacity+')'));
-        stationRenderer.addBreak(1.5, 1.99999, stationSymbol('rgba(160, 0, 200, '+opacity+')'));
-        stationRenderer.addBreak(2, Infinity, stationSymbol('rgba(115, 0, 0, '+opacity+')'));
-
-        function stationSymbol(color) {
-            var symbol = new SimpleMarkerSymbol({
-                size: 8,
-                color: new Color(color),
-                outline: new SimpleLineSymbol(SimpleLineSymbol.STYLE_DOT, new Color('#fff'), 1)
-            });
-            symbol.setStyle(SimpleMarkerSymbol.STYLE_CIRCLE);
-
-            return symbol;
-        }
-
-        var layerStationsOption = {
-            class: 'layer-stations',
-            infoTemplate:
-                new InfoTemplate(
-                    '${name}',
-                    '<p>latitude: ${lat}</p>' +
-                    '<p>longitude: ${lon}</p>' +
-                    '<p>SPI: ${spi}</p>'
-                ),
-            // visible: false
-        };
-
-        var layerStations = new CSVLayer(spiStationFile(DEFAULT_YEAR, DEFAULT_MONTH, 3), layerStationsOption);
-        layerStations.setRenderer(stationRenderer);
-
-        // layer represent SPI
-        var heatmapRenderer = new HeatmapRenderer({
-            field: 'spi',
-            // colorStops: [
-            //     { value: -2, color: 'rgba(115, 0, 0, 0.5)' },
-            //     { value: -1.5, color: 'rgba(230, 0, 0, 0.5)' },
-            //     { value: -1, color: 'rgba(230, 152, 0, 0.5)' },
-            //     { value: -0.5, color: 'rgba(225, 211, 127, 0.5)'},
-            //     { value: -0.25, color: 'rgba(225, 225, 0, 0.5)'},
-            //     { value: 3, color: 'transparent'}
-            // ],
-            // colors: ["rgba(0, 0, 255, 0)","rgb(0, 0, 255)","rgb(255, 0, 255)", "rgb(255, 0, 0)"],
-            blurRadius: 18,
-        });
-
+var opacity = 0.75;
         var gridRenderer = new ClassBreaksRenderer(gridSymbol('rgba(255,255,255, '+opacity+')'), 'spi');
         gridRenderer.addBreak(-Infinity, -2, gridSymbol('rgba(115, 0, 0, '+opacity+')'));
         gridRenderer.addBreak(-2, -1.5, gridSymbol('rgba(230, 0, 0, '+opacity+')'));
         gridRenderer.addBreak(-1.5, -1, gridSymbol('rgba(230, 152, 0, '+opacity+')'));
         gridRenderer.addBreak(-1, -0.5, gridSymbol('rgba(255, 211, 127, '+opacity+')'));
-        gridRenderer.addBreak(-0.5, -0.25, gridSymbol('rgba(225, 225, 0, '+opacity+')'));
-        gridRenderer.addBreak(-0.25, 0.25, gridSymbol('rgba(100, 200, 100, '+opacity+')'));
-        gridRenderer.addBreak(0.25, 0.5, gridSymbol('rgba(0, 170, 0, '+opacity+')'));
-        gridRenderer.addBreak(0.5, 1, gridSymbol('rgba(0, 160, 255, '+opacity+')'));
-        gridRenderer.addBreak(1, 1.5, gridSymbol('rgba(130, 0, 220, '+opacity+')'));
-        gridRenderer.addBreak(1.5, 2, gridSymbol('rgba(160, 0, 200, '+opacity+')'));
-        gridRenderer.addBreak(2, Infinity, gridSymbol('rgba(244, 0, 244, '+opacity+')'));
+        gridRenderer.addBreak(-0.5, -0.25, gridSymbol('rgba(232,229,131, '+opacity+')'));
+        gridRenderer.addBreak(-0.25, 0.25, gridSymbol('rgba(225,225,0, '+opacity+')'));
+        gridRenderer.addBreak(0.25, 0.5, gridSymbol('rgba(213,235,157, '+opacity+')'));
+        gridRenderer.addBreak(0.5, 1, gridSymbol('rgba(192,217,129, '+opacity+')'));
+        gridRenderer.addBreak(1, 1.5, gridSymbol('rgba(163,209,127, '+opacity+')'));
+        gridRenderer.addBreak(1.5, 2, gridSymbol('rgba(123,197,125, '+opacity+')'));
+        gridRenderer.addBreak(2, Infinity, gridSymbol('rgba(100, 200, 100, '+opacity+')'));
 
         function gridSymbol(color) {
             var symbol = new SimpleMarkerSymbol({
@@ -131,7 +76,6 @@ require([
                 '<p>latitude: ${lat}</p>' +
                 '<p>longitude: ${lon}</p>'
             ),
-            visible: false
         };
 
         // default: last month spi, 6-month scale
@@ -152,7 +96,6 @@ require([
 
         map.addLayer(layerBoundary);
         map.addLayer(layerSPI);
-        map.addLayer(layerStations);
 
         map.on('update-end', function() {
             map.disableMapNavigation();
@@ -215,10 +158,7 @@ require([
                 redrawSPILayer();
             });
 
-        // $('#month').html(today.getMonth());
         $('#month_input')
-            // .val(today.getMonth())
-            // .attr('max', today.getMonth())
             .on('change', function() {
                 $('#month').html($(this).val());
                 redrawSPILayer();
@@ -227,26 +167,6 @@ require([
         $('#time_scale_input').on('change', function() {
             $('#time_scale').html($('#time_scale_input option:selected').text());
             redrawSPILayer();
-        });
-
-        $('#grid_toggle').click(function() {
-            if($(this).html() === 'Show Grid') {
-                $(this).html('Hide Grid');
-                layerSPI.show();
-            } else {
-                $(this).html('Show Grid');
-                layerSPI.hide();
-            }
-        });
-
-        $('#stations_toggle').click(function() {
-            if($(this).html() === 'Show Stations') {
-                $(this).html('Hide Stations');
-                layerStations.show();
-            } else {
-                $(this).html('Show Stations');
-                layerStations.hide();
-            }
         });
 
         function redrawSPILayer() {
@@ -263,13 +183,6 @@ require([
 
             $('#grid_toggle').html('Hide Grid');
             layerSPI.show();
-
-            newStationUrl = spiStationFile(year,month,scale);
-            map.removeLayer(layerStations);
-            layerStations = new CSVLayer(newStationUrl, layerStationsOption);
-            layerStations.setRenderer(stationRenderer);
-            layerStations.redraw();
-            map.addLayer(layerStations);
         }
 
     });
@@ -313,3 +226,37 @@ function spiStationFile(year,month,scale) {
     var twoDigitMonth = ("0" + month).slice(-2);
     return 'data/stations/spi/' + scale + '/' + year + '_' + twoDigitMonth + '.csv';
 }
+
+var spiScales = [
+    {min:2, color:'rgba(100,200,100,1)', text:'Extremely moist'},
+    {min:1.5, max: 2, color:'rgba(123,197,125,1)', text:'Very severe moist'},
+    {min:1, max: 1.49, color:'rgba(163,209,127,1)', text:'Severe moist'},
+    {min:0.5, max: 0.99, color:'rgba(192,217,129,1)', text:'Moderate moist'},
+    {min:0.25, max: 0.49, color:'rgba(213,235,157,1)', text:'Mild moist'},
+    {min:-0.25, max: 0.24, color:'rgba(225,225,0,1)', text:'Near normal'},
+    {min:-0.49, max: -0.25, color:'rgba(232,229,131,1);', text:'Mild drought'},
+    {min:-0.99, max: -0.5, color:'rgba(225,211,127,1)', text:'Moderate drought'},
+    {min:-1.49, max: -1, color:'rgba(230,152,0,1)', text:'Severe drought'},
+    {min:-1.99, max: -1.5, color:'rgba(230,0,0,1)', text:'Very severe drought'},
+    {max: -2, color:'rgba(115,0,0,1)', text: 'Extremely drought'}
+];
+
+$(document).ready(function() {
+    $.each(spiScales, function(index, scale) {
+        var output = '<tr>' +
+            '<td>' + '<div class="color-block" style="background-color:'+ scale.color +'"></div>' + '</td>';
+        output += '<td class="text-center">';
+        if (scale.min === undefined) {
+            output += 'less than ' + scale.max;
+        } else if (scale.max === undefined) {
+            output += 'more than ' + scale.min;
+        } else {
+            output += scale.min + ' to ' + scale.max;
+        }
+        output += '</td>';
+        output += '<td>' + scale.text + '</td>' +
+            '</tr>';
+
+        $('#legend table').append(output);
+    });
+});

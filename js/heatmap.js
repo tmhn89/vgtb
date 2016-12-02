@@ -21,7 +21,6 @@ $(document).ready(function() {
                 $.each(data.split('\n'), function(index, row) {
                     if (index > 0 && row != '') {
                         year = Math.floor((index-1)/12) + 2000;
-                        console.log(index + ' | ' + year);
                         rowDOM = '';
                         if (index % 12 === 1) {
                             rowDOM += '<div class="year" data-year="'+year+'" data-scale="'+scale+'">';
@@ -74,24 +73,24 @@ function getColor(value) {
     } else if (value < -0.5) {
         return 'rgba(225, 211, 127, '+opacity*4+')';
     } else if (value < -0.25) {
-        return 'rgba(225, 225, 0, '+opacity+')';
+        return 'rgba(232,229,131, '+opacity+')';
     } else if (value < 0.24999) {
-        return 'rgba(100, 200, 100, '+opacity+')';
+        return 'rgba(225,225,0, '+opacity+')';
     } else if (value < 0.49999) {
-        return '#e8e583';
-        return 'rgba(0, 170, 0, '+opacity+')';
+        // return '#e8e583';
+        return 'rgba(213,235,157, '+opacity+')';
     } else if (value < 0.99999) {
-        return '#c0d981';
-        return 'rgba(0, 160, 255, '+opacity+')';
+        // return '#c0d981';
+        return 'rgba(192,217,129, '+opacity+')';
     } else if (value < 1.49999) {
-        return '#a3d17f';
-        return 'rgba(130, 0, 220, '+opacity+')';
+        // return '#a3d17f';
+        return 'rgba(163,209,127, '+opacity+')';
     } else if (value < 1.99999) {
-        return '#a2d07f';
-        return 'rgba(160, 0, 200, '+opacity+')';
+        // return '#a2d07f';
+        return 'rgba(123,197,125, '+opacity+')';
     }
-    return '#7bc57d';
-    return 'rgba(115, 0, 0, '+opacity+')';
+    // return '#7bc57d';
+    return 'rgba(100, 200, 100, '+opacity+')';
 }
 
 window.onmousemove = function (e) {
@@ -101,13 +100,13 @@ window.onmousemove = function (e) {
 
     var x = (e.clientX),
         y = (e.clientY);
-    if ($(window).height() - y < tooltipH) {
+    if ($(window).height() - e.pageY < tooltipH) {
         $('#tooltip')[0].style.top = y - offset - tooltipH + 'px';
     } else {
         $('#tooltip')[0].style.top = y + offset + 'px';
     }
 
-    if ($(window).height() - x < tooltipW) {
+    if ($(window).width() - x < tooltipW) {
         $('#tooltip')[0].style.left = x - offset - tooltipW + 'px';
     } else {
         $('#tooltip')[0].style.left = x + offset + 'px';
