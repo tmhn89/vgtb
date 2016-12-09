@@ -83,7 +83,8 @@ require([
         };
 
         // default: last month spi, 6-month scale
-        var layerGrid = new CSVLayer(precipGridFile(DEFAULT_YEAR, DEFAULT_MONTH, DEFAULT_DAY), layerGridOption);
+        var today = new Date();
+        var layerGrid = new CSVLayer(precipGridFile(today.getFullYear(), today.getMonth()+1, today.getDate()-1), layerGridOption);
         layerGrid.setRenderer(gridDailyRenderer);
 
         // map
@@ -117,7 +118,6 @@ require([
             // e.preventDefault();
         });
 
-        var today = new Date();
         // $('#year').html(today.getFullYear());
         $('#year_input')
             // .val(today.getFullYear())
@@ -210,6 +210,21 @@ require([
 
     $(function() {
         loadLegend(dailyLegends);
+        // set default input to yesterday
+        var today = new Date();
+        today.setDate(today.getDate() - 1);
+
+        var day = ("0" + (today.getDate())).slice(-2)
+        $('#day').html(day);
+        $('#day_input').val(day);
+
+        var month = ("0" + (today.getMonth()+1)).slice(-2);
+        $('#month').html(month);
+        $('#month_input').val(month);
+
+        var year = today.getFullYear();
+        $('#year').html(year);
+        $('#year_input').val(year);
     })
 
     if (!String.prototype.format) {
