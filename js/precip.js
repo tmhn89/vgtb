@@ -6,7 +6,8 @@ var CREATING_AREA_FILE = false;
 var START_YEAR = 2000;
 
 var DEFAULT_YEAR = 2016;
-var DEFAULT_MONTH = 09;
+var DEFAULT_MONTH = 12;
+var DEFAULT_DAY = 07;
 
 var map;
 
@@ -49,6 +50,18 @@ require([
         gridRenderer.addBreak(128, 144, gridSymbol('rgba(2, 119, 189, '+opacity+')'));
         gridRenderer.addBreak(144, Infinity, gridSymbol('rgba(1, 87, 155, '+opacity+')'));
 
+        var gridDailyRenderer = new ClassBreaksRenderer(gridSymbol('rgba(255,255,255, '+opacity+')'), 'rainRate');
+        gridDailyRenderer.addBreak(0, 2, gridSymbol('rgba(225, 245, 254, '+opacity+')'));
+        gridDailyRenderer.addBreak(2, 4, gridSymbol('rgba(179, 229, 252, '+opacity+')'));
+        gridDailyRenderer.addBreak(4, 6, gridSymbol('rgba(129, 212, 250, '+opacity+')'));
+        gridDailyRenderer.addBreak(6, 8, gridSymbol('rgba(79, 295, 247, '+opacity+')'));
+        gridDailyRenderer.addBreak(8, 10, gridSymbol('rgba(41, 182, 246, '+opacity+')'));
+        gridDailyRenderer.addBreak(10, 12, gridSymbol('rgba(3, 169, 244, '+opacity+')'));
+        gridDailyRenderer.addBreak(12, 14, gridSymbol('rgba(3, 155, 229, '+opacity+')'));
+        gridDailyRenderer.addBreak(14, 16, gridSymbol('rgba(2, 136, 209, '+opacity+')'));
+        gridDailyRenderer.addBreak(16, 18, gridSymbol('rgba(2, 119, 189, '+opacity+')'));
+        gridDailyRenderer.addBreak(18, Infinity, gridSymbol('rgba(1, 87, 155, '+opacity+')'));
+
         function gridSymbol(color) {
             var symbol = new SimpleMarkerSymbol({
                 size: 28,
@@ -70,8 +83,8 @@ require([
         };
 
         // default: last month spi, 6-month scale
-        var layerGrid = new CSVLayer(precipGridFile(DEFAULT_YEAR, DEFAULT_MONTH), layerGridOption);
-        layerGrid.setRenderer(gridRenderer);
+        var layerGrid = new CSVLayer(precipGridFile(DEFAULT_YEAR, DEFAULT_MONTH, DEFAULT_DAY), layerGridOption);
+        layerGrid.setRenderer(gridDailyRenderer);
 
         // map
         map = new Map('map', {
@@ -101,7 +114,7 @@ require([
 
         // map controller
         $("[type='number']").keypress(function (e) {
-            e.preventDefault();
+            // e.preventDefault();
         });
 
         var today = new Date();
@@ -139,40 +152,104 @@ require([
                 redrawGrid();
             });
 
-            function redrawGrid() {
-                var year = $('#year_input').val();
-                var month = $('#month_input').val();
+        $('#day_input')
+            .on('change', function() {
+                $('#day').html($(this).val());
+                if ($(this).val() === '') {
+                    $('#day_sep').hide();
+                    $('#day_prep').hide();
+                    $('#month_prep').show();
+                } else {
+                    $('#day_sep').show();
+                    $('#day_prep').show();
+                    $('#month_prep').hide();
+                }
+                redrawGrid();
+            });
 
-                newGridUrl = precipGridFile(year,month);
+        function redrawGrid() {
+            var year = $('#year_input').val();
+            var month = $('#month_input').val();
+            var day = $('#day_input').val();
+
+            newGridUrl = precipGridFile(year,month,day);
+            if (!newGridUrl) {
+
+            } else {
                 map.removeLayer(layerGrid);
                 layerGrid = new CSVLayer(newGridUrl, layerGridOption);
-                layerGrid.setRenderer(gridRenderer);
+                if (day === '') {
+                    layerGrid.setRenderer(gridRenderer);
+                    loadLegend(monthlyLegends);
+                } else {
+                    layerGrid.setRenderer(gridDailyRenderer);
+                    loadLegend(dailyLegends);
+                }
                 layerGrid.redraw();
                 map.addLayer(layerGrid);
             }
-
+        }
     });
 
-    function precipGridFile(year,month) {
+    function precipGridFile(year,month,day) {
         var twoDigitMonth = ("0" + month).slice(-2);
+        if (isNaN(twoDigitMonth)) {
+            return false;
+        }
+
+        if (day !== '') {
+            var twoDigitDay = ("0" + day).slice(-2);
+            if (isNaN(twoDigitDay)) {
+                return false;
+            }
+            return 'data/jaxa_daily/' + year + twoDigitMonth + twoDigitDay + '.csv';
+        }
+
         return 'data/jaxa_monthly/' + year + twoDigitMonth + '.csv';
     }
 
     $(function() {
-        // load legend
-        var legends = [
-            { min: 0, max: 0, color: 'rgb(255, 255, 255)' },
-            { min: 0, max: 16, color: 'rgb(225, 245, 254)' },
-            { min: 16, max: 32, color: 'rgb(179, 229, 252)' },
-            { min: 32, max: 48, color: 'rgb(129, 212, 250)' },
-            { min: 48, max: 64, color: 'rgb(79, 295, 247)' },
-            { min: 64, max: 80, color: 'rgb(41, 182, 246)' },
-            { min: 80, max: 96, color: 'rgb(3, 169, 244)' },
-            { min: 96, max: 112, color: 'rgb(3, 155, 229)' },
-            { min: 112, max: 128, color: 'rgb(2, 136, 209)' },
-            { min: 128, max: 144, color: 'rgb(2, 119, 189)' },
-            { min: 144, max: Infinity, color: 'rgb(1, 87, 155)' }
-        ];
+        loadLegend(dailyLegends);
+    })
+
+    if (!String.prototype.format) {
+        String.prototype.format = function() {
+            var args = arguments;
+            return this.replace(/{(\d+)}/g, function(match, number) {
+                return typeof args[number] != 'undefined' ? args[number] : match;
+            });
+        };
+    }
+
+    var monthlyLegends = [
+        { min: 0, max: 0, color: 'rgb(255, 255, 255)' },
+        { min: 0, max: 16, color: 'rgb(225, 245, 254)' },
+        { min: 16, max: 32, color: 'rgb(179, 229, 252)' },
+        { min: 32, max: 48, color: 'rgb(129, 212, 250)' },
+        { min: 48, max: 64, color: 'rgb(79, 295, 247)' },
+        { min: 64, max: 80, color: 'rgb(41, 182, 246)' },
+        { min: 80, max: 96, color: 'rgb(3, 169, 244)' },
+        { min: 96, max: 112, color: 'rgb(3, 155, 229)' },
+        { min: 112, max: 128, color: 'rgb(2, 136, 209)' },
+        { min: 128, max: 144, color: 'rgb(2, 119, 189)' },
+        { min: 144, max: Infinity, color: 'rgb(1, 87, 155)' }
+    ];
+    var dailyLegends = [
+        { min: 0, max: 0, color: 'rgb(255, 255, 255)' },
+        { min: 0, max: 2, color: 'rgb(225, 245, 254)' },
+        { min: 2, max: 4, color: 'rgb(179, 229, 252)' },
+        { min: 4, max: 6, color: 'rgb(129, 212, 250)' },
+        { min: 6, max: 8, color: 'rgb(79, 295, 247)' },
+        { min: 8, max: 10, color: 'rgb(41, 182, 246)' },
+        { min: 10, max: 12, color: 'rgb(3, 169, 244)' },
+        { min: 12, max: 14, color: 'rgb(3, 155, 229)' },
+        { min: 14, max: 16, color: 'rgb(2, 136, 209)' },
+        { min: 16, max: 18, color: 'rgb(2, 119, 189)' },
+        { min: 18, max: Infinity, color: 'rgb(1, 87, 155)' }
+    ];
+
+    function loadLegend(legends) {
+        $('#legend table').html('');
         $.each(legends, function(index, legend) {
             var output = '<tr>' +
                 '<td>' + '<div class="color-block" style="background-color:'+ legend.color +'"></div>' + '</td>';
@@ -187,13 +264,4 @@ require([
 
             $('#legend table').append(output);
         })
-    })
-
-    if (!String.prototype.format) {
-        String.prototype.format = function() {
-            var args = arguments;
-            return this.replace(/{(\d+)}/g, function(match, number) {
-                return typeof args[number] != 'undefined' ? args[number] : match;
-            });
-        };
     }

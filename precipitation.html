@@ -22,22 +22,31 @@
     <div class="template"></div>
     <div class="content">
         <div class="col-sm-3">
-            <h2>Precipitation in <span id="month">09</span>/<span id="year">2016</span></h2>
+            <h2>Precipitation <span id="month_prep">in </span> <span id="day_prep">on </span>
+                <span id="day">07</span><span id="day_sep">/</span><span id="month">12</span>/<span id="year">2016</span>
+            </h2>
             <div class="controller">
-                <h5 style="margin-top: 32px;">Display records in:</h5>
+                <h5 style="margin-top: 32px;">Display records on:</h5>
+                <div class="ctrl-wrap">
+                    <p>
+                        <input id="day_input" type="number"
+                            min="1" max="31" step="1" value="07" onchange="if(parseInt(this.value,10)<10) { this.value=('0'+this.value); } this.value = this.value.slice(-2)" />
+                    </p>
+                    <p><label>Day</label></p>
+                </div>
+                <div class="ctrl-wrap">
+                    <p>
+                        <input id="month_input" type="number"
+                            min="1" max="12" step="1" value="12" onchange="if(parseInt(this.value,10)<10) { this.value=('0'+this.value); } this.value = this.value.slice(-2)" />
+                    </p>
+                    <p><label>Month</label></p>
+                </div>
                 <div class="ctrl-wrap">
                     <p>
                         <input id="year_input" type="number"
                             min="2000" max="2016" step="1" value="2016" />
                     </p>
                     <p><label>Year</label></p>
-                </div>
-                <div class="ctrl-wrap">
-                    <p>
-                        <input id="month_input" type="number"
-                            min="1" max="12" step="1" value="09" onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;" />
-                    </p>
-                    <p><label>Month</label></p>
                 </div>
             </div>
             <div id="legend">
