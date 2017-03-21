@@ -38,7 +38,7 @@ require([
         // 2. Stations location
         // 3. SPI calculated from JAXA's grid data
         var layerBoundary = new FeatureLayer(
-            'https://services7.arcgis.com/o5DIa73O7QiRWn8s/arcgis/rest/services/Basin_outer_bnd_27_09_2011/FeatureServer/0',
+            'https://services6.arcgis.com/4zw6b4Op5gFRxEVR/arcgis/rest/services/Basin_outer_bnd_27_09_2011/FeatureServer/0',
             {
                 class: 'layer-boundary',
             }

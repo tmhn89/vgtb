@@ -5,11 +5,11 @@
     <title>Vu Gia Thu Bon river basin drought map</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://js.arcgis.com/3.18/esri/css/esri.css">
+    <link rel="stylesheet" href="https://js.arcgis.com/3.19/esri/css/esri.css">
     <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
     <link rel="stylesheet" href="css/template.min.css" />
 
-    <script src="https://js.arcgis.com/3.18/"></script>
+    <script src="https://js.arcgis.com/3.19/"></script>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="js/template.js"></script>
@@ -55,7 +55,9 @@
             </div>
         </div>
         <div class="col-sm-9">
-            <div id="map" class="precip"></div>
+            <div class="map-wrap">
+                <div id="map" class="precip"></div>
+            </div>
             <svg width="0" height="0">
                 <defs>
                     <clipPath id="vgtbBoundary">
