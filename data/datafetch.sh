@@ -9,7 +9,7 @@ do
     month=$(date -j -f "%s" $currentDateTs "+%m")
     year=$(date -j -f "%s" $currentDateTs "+%Y")
 
-    datadir="hokusai.eorc.jaxa.jp/realtime/txt/02_AsiaSE/$year/$month/$day"
+    datadir="hokusai.eorc.jaxa.jp/realtime_ver/v7/txt/02_AsiaSE/$year/$month/$day"
     #download from each day
     echo "Start downloading $year/$month/$day data"
     wget -r -q --user=rainmap --password=Niskur+1404 ftp://$datadir -o wget.log
