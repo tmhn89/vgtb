@@ -59,7 +59,7 @@ def exportPrecipVectorByPos(db):
         filename = '../precip_vector/' + pos + '.txt'
         writer = open(filename,'w')
         # create file
-        for year in range(2000, 2015):
+        for year in range(2000, 2016):
             for month in range(1,13):
                 record_in_month = [record for record in db[pos] if int(record['month']) == month and int(record['year']) == year]
                 if len(record_in_month) == 0:
