@@ -97,9 +97,9 @@ div.content-wrap {
     opacity: 0;
     // &.precip {
         width: 640px;
-        height: 650px;
+        height: 500px;
         #map_gc > g {
-            transform: translateY(15px);
+            // transform: translateY(15px);
         }
     // }
 }

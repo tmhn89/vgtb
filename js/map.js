@@ -37,13 +37,14 @@ require([
         // 1. VGTB river basin boundary
         // 2. Stations location
         // 3. SPI calculated from JAXA's grid data
-        var layerBoundary = new FeatureLayer(
-            'https://services6.arcgis.com/4zw6b4Op5gFRxEVR/arcgis/rest/services/Basin_outer_bnd_27_09_2011/FeatureServer/0',
-            {
-                class: 'layer-boundary',
-            }
-        );
-var opacity = 0.75;
+        // var layerBoundary = new FeatureLayer(
+        //     'https://services6.arcgis.com/4zw6b4Op5gFRxEVR/arcgis/rest/services/Basin_outer_bnd_27_09_2011/FeatureServer/0',
+        //     {
+        //         class: 'layer-boundary',
+        //     }
+        // );
+
+        var opacity = 0.75;
         var gridRenderer = new ClassBreaksRenderer(gridSymbol('rgba(255,255,255, '+opacity+')'), 'spi');
         gridRenderer.addBreak(-Infinity, -2, gridSymbol('rgba(115, 0, 0, '+opacity+')'));
         gridRenderer.addBreak(-2, -1.5, gridSymbol('rgba(230, 0, 0, '+opacity+')'));
@@ -94,15 +95,16 @@ var opacity = 0.75;
             center: CENTER,
         });
 
-        map.addLayer(layerBoundary);
+        // map.addLayer(layerBoundary);
         map.addLayer(layerSPI);
 
         map.on('update-end', function() {
             map.disableMapNavigation();
 
-            $('#vgtbBoundary').append($('#' + layerBoundary.id + '_layer > path'));
+            // $('#vgtbBoundary').append($('#' + layerBoundary.id + '_layer > path'));
             if ($('#vgtbBoundary *').length > 0) {
-                $('#map_container, img:not([id*=map_layer])')
+                // $('#map_container, img:not([id*=map_layer])')
+                $('#map_layer0, #map_gc > g')
                     .css('-webkit-clip-path', 'url("#vgtbBoundary")')
                     .css('-clip-path', 'url("#vgtbBoundary")');
                 $('#map').css('opacity', 1);
