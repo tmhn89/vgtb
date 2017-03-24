@@ -17,7 +17,6 @@ def test(filename, scale):
         for row in reader:
             precip_vector.append(float(row[0]))
 
-
     pdb.set_trace()
 
 # calculate spi from vector of monthly rainfall
