@@ -152,6 +152,10 @@ require([
                     // data only from March 2000 and later
                     $('#month_input').attr('min', 3);
                     $('#month_input').attr('max', 12);
+                } else if (year == 2017) {
+                    // data only from March 2017 and before. todo: fix bug when select month later than now
+                    $('#month_input').attr('min', 1);
+                    $('#month_input').attr('max', 2);
                 } else {
                     $('#month_input').attr('min', 1);
                     $('#month_input').attr('max', 12);
