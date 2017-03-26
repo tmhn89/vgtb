@@ -85,7 +85,7 @@ require([
         layerSPI.setRenderer(gridRenderer);
 
         dojo.connect(layerSPI, 'onError', function() {
-            showMessage('No data available for selected time')
+            showMessage('No data available for selected time');
         });
 
         // map
@@ -190,7 +190,7 @@ require([
             layerSPI = new CSVLayer(newGridUrl, layerSPIOption);
 
             dojo.connect(layerSPI, 'onError', function() {
-                showMessage('No data available for selected time')
+                showMessage('No data available for selected time');
             });
 
             layerSPI.setRenderer(gridRenderer);
