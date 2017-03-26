@@ -6,7 +6,7 @@ function reloadPreview() {
 
     var year = $('#year_input').val();
     var scale = $('#time_scale_input').val();
-    var filename = '/preview/spi/' + scale + '/' + year + twoDigitMonth + '.png';
+    var filename = base_url() + '/preview/spi/' + scale + '/' + year + twoDigitMonth + '.png';
 
     if (fileExists(filename)) {
         // loaded file successfully
@@ -25,7 +25,21 @@ function fileExists(url) {
     return http.status!=404;
 }
 
+function base_url() {
+    pathArray = location.href.split( '/' );
+    protocol = pathArray[0];
+    host = pathArray[2];
+
+    if (location.href.includes('/vgtb')) {
+        // production
+        return protocol + '//' + host + '/vgtb';
+    }
+    return protocol + '//' + host;
+}
+
 $(document).ready(function() {
+    reloadPreview();
+
     var today = new Date();
 
     $('#year_input')
