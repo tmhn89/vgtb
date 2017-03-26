@@ -87,6 +87,10 @@ require([
         var layerGrid = new CSVLayer(precipGridFile(today.getFullYear(), today.getMonth()+1, today.getDate()-1), layerGridOption);
         layerGrid.setRenderer(gridDailyRenderer);
 
+        dojo.connect(layerGrid, 'onError', function() {
+            showMessage('No data available for selected time')
+        });
+
         // map
         map = new Map('map', {
             basemap: 'osm',
@@ -187,6 +191,9 @@ require([
                     layerGrid.setRenderer(gridDailyRenderer);
                     loadLegend(dailyLegends);
                 }
+                dojo.connect(layerGrid, 'onError', function() {
+                    showMessage('No data available for selected time')
+                });
                 layerGrid.redraw();
                 map.addLayer(layerGrid);
             }

@@ -1,3 +1,15 @@
+
+function showMessage(content) {
+    $('.message-wrap').addClass('shown');
+    $('.message-wrap .message').text(content);
+
+    window.setTimeout(hideMessage, 3000);
+}
+
+function hideMessage() {
+    $('.message-wrap').removeClass('shown');
+}
+
 $(function(){
     $('.template').load('template.html', function() {
         // move content to content-wrap

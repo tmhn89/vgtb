@@ -84,6 +84,10 @@ require([
         // layerSPI.setRenderer(heatmapRenderer);
         layerSPI.setRenderer(gridRenderer);
 
+        dojo.connect(layerSPI, 'onError', function() {
+            showMessage('No data available for selected time')
+        });
+
         // map
         map = new Map('map', {
             basemap: 'osm',
@@ -128,7 +132,7 @@ require([
 
         // map controller
         $("[type='number']").keypress(function (e) {
-            e.preventDefault();
+            // e.preventDefault();
         });
 
         // $('#year').html(today.getFullYear());
@@ -148,18 +152,19 @@ require([
                             .val(today.getMonth())
                             .trigger('change');
                     }
-                } else if (year == 2000) {
-                    // data only from March 2000 and later
-                    $('#month_input').attr('min', 3);
-                    $('#month_input').attr('max', 12);
-                } else if (year == 2017) {
-                    // data only from March 2017 and before. todo: fix bug when select month later than now
-                    $('#month_input').attr('min', 1);
-                    $('#month_input').attr('max', 2);
-                } else {
-                    $('#month_input').attr('min', 1);
-                    $('#month_input').attr('max', 12);
                 }
+                // else if (year == 2000) {
+                //     // data only from March 2000 and later
+                //     $('#month_input').attr('min', 3);
+                //     $('#month_input').attr('max', 12);
+                // } else if (year == 2017) {
+                //     // data only from March 2017 and before. todo: fix bug when select month later than now
+                //     $('#month_input').attr('min', 1);
+                //     $('#month_input').attr('max', 2);
+                // } else {
+                //     $('#month_input').attr('min', 1);
+                //     $('#month_input').attr('max', 12);
+                // }
                 // redraw layerSPI
                 redrawSPILayer();
             });
@@ -183,6 +188,11 @@ require([
             newGridUrl = spiGridFile(year,month,scale);
             map.removeLayer(layerSPI);
             layerSPI = new CSVLayer(newGridUrl, layerSPIOption);
+
+            dojo.connect(layerSPI, 'onError', function() {
+                showMessage('No data available for selected time')
+            });
+
             layerSPI.setRenderer(gridRenderer);
             layerSPI.redraw();
             map.addLayer(layerSPI);
