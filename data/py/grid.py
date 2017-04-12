@@ -69,20 +69,6 @@ def exportPrecipVectorByPos(db):
                     # writer.write(record_in_month[0]['month'] + ',' + record_in_month[0]['year'] + ',' + record_in_month[0]['precip'] + '\n')
                     writer.write(record_in_month[0]['precip'] + '\n')
 
-# def exportPrecipVectorByPosAndMonth(db):
-#     # write to lat_lon.txt files
-#     for pos in db.keys():
-#         # create file
-#         for month in range(1,13):
-#             filename = '../precip_vector/' + pos + '_' + str(month) + '.txt'
-#             writer = open(filename,'w')
-#             for year in range(2000, 2016):
-#                 record_in_month = [record for record in db[pos] if int(record['month']) == month and int(record['year']) == year]
-#                 if len(record_in_month) == 0:
-#                     writer.write('0' + '\n')
-#                 else:
-#                     writer.write(record_in_month[0]['precip'] + '\n')
-
 def runSPICalculator(scale, db):
     years = range(2000, 2018)
     final = {}
